@@ -1,0 +1,13 @@
+# Virtual environment
+.venv/
+__pycache__/
+*.pyc
+
+# Heavy model files
+*.onnx
+*.onnx.json
+
+# Audio & Video binary artifacts
+*.wav
+*.mp4
+tmp/

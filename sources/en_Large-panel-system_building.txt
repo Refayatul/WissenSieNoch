@@ -1,0 +1,83 @@
+SOURCE: https://en.wikipedia.org/wiki/Large-panel-system_building
+
+A large-panel-system building, also known as Plattenbau, is a building constructed of large, prefabricated concrete slabs (slab construction). Such buildings are often found in housing developments. Although large-panel-system buildings are often considered to be typical of Eastern Bloc countries in the second half of the 20th century, this prefabricated construction method was also used extensively in Western Europe and elsewhere, particularly in public housing (see tower block).
+This construction method, known as Plattenbau in German, involves assembling buildings from story-high precast concrete elements that are manufactured in a factory and then transported to the construction site for assembly. It emerged from efforts to develop serial and industrialized housing construction, evolving through techniques such as block construction, large-block construction, concrete strip construction, and cast-in-place concrete panels from the early 20th century onward.
+For large-panel construction to be effective, it requires typification, standardization, and the capability for industrialized production, transportation, and assembly of the heavy elements. Due to evolving political and technological conditions, this method became widespread across Europe after World War II. While large-panel buildings in Western Europe were primarily used for social housing projects, they became the dominant construction method for nearly all purposes in socialist Europe from the early 1960s onward. However, economic constraints in Eastern European planned economies limited the full realization of the system's increasing flexibility and complexity.
+
+
+== History ==
+
+
+=== Early history ===
+In the mid-19th century, a boom in prefabrication began with the export of preassembled houses made of wood and iron to British colonies. This trend ended around 1860 with the gold rush, after which manufacturers shifted their focus back to the domestic market. However, prefabrication only had a chance of success if it could compete with traditional masonry construction. This led to the spread of cast concrete in England and France.
+The artificial stone company Lippmann, Schneckenburger & Cie. from Batignolles, near Paris, was the first to produce hollow concrete panels that could be assembled into houses. However, these panels had to be small to remain transportable, which limited their size. In 1875, W. H. Lascalles experimented with a block construction system using reinforced elements measuring 61 × 91 × 4 cm. The English architect Richard Norman Shaw was commissioned to design cottages in a rustic style for this system. Lascalles and Shaw were awarded a gold medal at the 1878 Paris World Exhibition for their houses, which were inspired by the Queen Anne style architecture.
+The first known houses constructed from large prefabricated concrete panels were built by John Alexander Brodie, an employee of the city of Liverpool. Between 1903 and 1905, he oversaw the construction of worker housing on Eldon Street for the Housing Council. This project was experimental, with work processes being documented photographically. Brodie's goal was to create housing quickly and affordably.
+The buildings were constructed partly using in-situ concrete and masonry, while others featured story-high prefabricated panels with window openings. Assembly involved erecting a house-sized scaffold. Some wall panels were even cast on the completed floors and then tilted into position. In 1905, Brodie presented another prefabricated house at the Cheap Cottages Exhibition in Letchworth, England.
+
+
+=== The Atterbury System ===
+In 1902, the architect Grosvenor Atterbury developed a panel construction system, inspired by Thomas Edison's cast concrete houses. He first applied this method in 1906 in a privately funded experimental project in Philadelphia. By 1910, he was able to construct one-and-a-half-story buildings, and by 1918, he successfully built two-story structures as part of the third phase of the Forest Hills Gardens garden city project in Queens, New York.
+The panels were story-high and had no window openings, as these would have made them too heavy. Technically, the system was closer to strip construction. Additionally, the basement was built with masonry, while the ground floor was constructed using in-situ concrete.
+Atterbury's construction principle became known as the Atterbury System and gained recognition in Europe. In the Netherlands, it was patented as the "System Bron" and was first used in 1921 for the construction of Betondorp ("Concrete Village"), a residential district in Amsterdam-Oost. The two-story row houses were designed by Dutch architect Dick Greiner and were part of a broader series of experimental concrete housing projects.
+
+
+=== Post-WWI period ===
+Prefabrication was pioneered in the Netherlands following World War I, based on construction methods developed in the United States. The first German use of large-panel-system building construction is what is now known as the Splanemann-Siedlung in Berlin's Lichtenberg district, constructed in 1926–1930. These two- and three-storey apartment houses were assembled of locally cast slabs, inspired by the Dutch Betondorp in Watergraafsmeer, a suburb of Amsterdam.
+
+
+=== Post-war period ===
+
+In East Germany, large-panel-system building areas have been designated as Neubaugebiet ("new development area"). Virtually all new residential buildings since the 1960s were built in this style, as it was a quick and relatively inexpensive way to curb the country's severe housing shortage, which had been caused by wartime bombing raids and the large influx of German refugees from further east. At the same time, many buildings from earlier eras had substantial drawbacks, such as coal heat, no hot running water, or bathrooms shared by multiple units. As these buildings fell into disrepair, many of their inhabitants moved into newer large-panel-system housing. Today, large-panel-system buildings are often no longer desirable, due in part to both their low thermal efficiency, and their rapid deterioration as a result of their vulnerability to damp ingress and their cheap and quick construction methods, while older housing stock has undergone extensive renovation or been replaced with more modern dwelling units.
+There were several common large-panel-system building designs. The most common series was the P2, followed by the WBS 70, the WHH GT 18, and Q3A. The designs were flexible and could be built as towers or rows of apartments of various heights. The short sides of building blocks often featured large-scale murals or colourful mosaics. 
+Since the entire building had a standard structure, apartment layouts were also standardized. Furniture producers used this to offer prefabricated sets that matched a variety of typical apartment setups. 
+
+There have been projects with low rise Plattenbauten such as the town of Bernau just north of Berlin. This town had an almost complete historic center of mainly wooden-framed buildings within its preserved city walls. Most of these were torn down after 1975 and during the eighties to be replaced by 2–4-storey buildings constructed of prefabricated concrete slabs. To fit in with the medieval church and the almost-complete city wall, the houses used rather small design units and decreased in height the farther away they were from the Church and the nearer they came to the city wall. A similar project was the Nikolaiviertel around the historic Nikolai church in Berlin's old centre. In the case of the Nikolaiviertel, the buildings were made to look more historic.
+Large-panel-system apartments were once considered highly desirable in East Germany, largely due to the lack of any other viable alternative. The main alternatives of the time were overcrowded, deteriorating prewar housing, often with wartime damage still visible, due to policies that preferred new construction over repairing the damaged housing stock. Plattenbau suburbs were planned not only for apartment buildings, but included schools, shopping centers, hospitals, restaurants, and recreational facilities. Commercial areas were either on the ground floors of high-rise apartment blocks, or in separate structures. Since few citizens owned cars, the developments were planned to include tramways, subways, and bus lines. 
+Since reunification, a combination of decreasing population, renovation of older buildings, and construction of modern alternative housing has led to high vacancy rates, with some estimates placing the number of unoccupied units at around a million. Many large-panel-system apartments were built in giant settlements, often on the edges of cities (such as Marzahn and Hellersdorf in Berlin and Halle-Neustadt), making them inconveniently located.
+While some large-panel-system apartments have been torn down, many are renovated to a modern standard. Especially in bigger cities, these districts are slowly getting more popular again, since they provide affordable apartments and often walkable environments with good public transport systems.  
+
+In Finland, particularly in northern towns, such as Rovaniemi, Plattenbauten are commonplace. Rovaniemi was nearly completely destroyed during World War II and subsequently rebuilt from scratch, with new concrete-panel buildings replacing old wooden houses and becoming a symbol of modernization. Whereas in the rest of Europe, large-panel-system buildings are associated with public housing, in Rovaniemi they are favoured by the middle classes on their way to purchasing a bungalow. 
+In the United Kingdom, the mass construction of tower blocks using large panel system construction in major cities was commonplace in the 1960s and 1970s, being seen as a quick and inexpensive way of social housing renewal in the wake of the war and as a response to slum clearance.  However in many cities, the method was found to be flawed in terms of dealing with the generally intemperate climate of the British Isles as a whole, with many blocks developing excruciating damp and condensation issues which led to them being declared unfit for human habitation.  Improper assembly of the blocks also compounded the issue, with the Ronan Point collapse in 1968 bringing to bear many design concerns surrounding LPS construction and its general lack of structural redundancy in the event of what was, in that case a gas explosion.  By the 1980s, the associated stigma of high rise social housing that had built up through the previous decade resulted in hundreds of such blocks being demolished.
+
+
+== See also ==
+Hansaviertel
+HLM (France)
+Banlieue (France)
+Million Programme (Sweden)
+Panelház (Hungary)
+Gemeindebau (Austria)
+Michenzani (Zanzibar, Tanzania)
+Panelák and Sídlisko (Czech Republic and Slovakia)
+Panel building
+Panel buildings in Russia
+Khrushchevka  and Brezhnevka (former Soviet Union)
+Ugsarmal bair (Mongolia)
+Housing estate
+Affordable housing
+Public housing
+Subsidized housing
+Structural robustness
+Prefabricated building
+Architecture
+Grosvenor Atterbury
+Unité d'Habitation
+Urban planning in communist countries
+Safety
+Ronan Point
+
+
+== Notes ==
+
+
+== References ==
+
+
+== Sources ==
+Meuser, Philipp; Zadorin, Dimitrij (2016). Towards a Typology of Soviet Mass Housing: Prefabrication in the USSR 1955 – 1991, DOM publishers, Berlin. ISBN 978-3869224466.
+Meuser, Philipp (2019). Prefabricated Housing. Construction and Design Manual, DOM publishers, Berlin. ISBN 978-3-86922-021-5
+
+
+== External links ==
+
+FIB international Bulletin 43 - structural connections for precast concrete buildings

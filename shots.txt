@@ -1,0 +1,99 @@
+shot_001.jpg|8|Bundesarchiv, Bild 183-17227-0001 / Klein / CC-BY-SA 3.0
+shot_002.jpg|8|Bundesarchiv, Bild 183-73766-0070 / Friedrich Gahlbeck / CC-BY-SA 3.0
+shot_003.jpg|8|Bundesarchiv, Bild 183-94925-0001 / Horst Sturm / CC-BY-SA 3.0
+shot_004.jpg|8|Bundesarchiv, Bild 183-E0207-0009-001 / Friedrich Gahlbeck / CC-BY-SA 3.0
+shot_005.jpg|8|Bundesarchiv, Bild 183-E0601-0091-001 / Heinz Koch / CC-BY-SA 3.0
+shot_006.jpg|8|Bundesarchiv, Bild 183-1987-0219-030 / Hartmut Reiche / CC-BY-SA 3.0
+shot_007.jpg|8|Bundesarchiv, Bild 183-1987-0529-046 / Zimmermann, Peter / CC-BY-SA 3.0
+shot_008.jpg|8|Bundesarchiv, Bild 183-70205-0003 / Weiß / CC-BY-SA 3.0
+shot_009.jpg|8|Bundesarchiv, Bild 183-J1028-0302-001 / UnknownUnknown / CC-BY-SA 3.0
+shot_010.jpg|8|Bundesarchiv, Bild 183-1987-0519-033 / Wolfried Paetzold / CC-BY-SA 3.0
+shot_011.jpg|8|Bundesarchiv, Bild 183-93243-0002 / Burmeister / CC-BY-SA 3.0
+shot_012.jpg|8|Bundesarchiv, Bild 183-A1129-0006-001 / Burmeister / CC-BY-SA 3.0
+shot_013.jpg|8|Bundesarchiv, Bild 183-E0706-0006-002 / Hans-Joachim Spremberg / CC-BY-SA 3.0
+shot_014.jpg|8|Bundesarchiv, Bild 183-E0714-0212-004 / Hans-Joachim Spremberg / CC-BY-SA 3.0
+shot_015.jpg|8|Bundesarchiv, Bild 183-K1102-0010 / Benno Bartocha / CC-BY-SA 3.0
+shot_016.jpg|8|Bundesarchiv, Bild 183-L0725-0334 / Schutt, Erich / CC-BY-SA 3.0
+shot_017.jpg|8|Bundesarchiv, Bild 183-19236-0005 / Klein / CC-BY-SA 3.0
+shot_018.jpg|8|Bundesarchiv, Bild 183-1988-1012-012 / Peer Grimm / CC-BY-SA 3.0
+shot_019.jpg|8|Bundesarchiv, Bild 183-27992-0002 / Wittig / CC-BY-SA 3.0
+shot_020.jpg|8|Bundesarchiv, Bild 183-31392-0001 / Günter Weiß / CC-BY-SA 3.0
+shot_021.jpg|8|Bundesarchiv, Bild 183-46392-0001 / Wilhelm Biscan / CC-BY-SA 3.0
+shot_022.jpg|8|Bundesarchiv, Bild 183-1984-0807-017 / Waltraud Grubitzsch / CC-BY-SA 3.0
+shot_023.jpg|8|Bundesarchiv, Bild 183-61675-0001 / Günter Weiß / CC-BY-SA 3.0
+shot_024.jpg|8|Bundesarchiv, Bild 183-61675-0002 / Günter Weiß / CC-BY-SA 3.0
+shot_025.jpg|8|Bundesarchiv, Bild 183-K1229-0008 / Benno Bartocha / CC-BY-SA 3.0
+shot_026.jpg|8|Bundesarchiv, Bild 183-14210-0001 / Quaschinsky, Hans-Günter / CC-BY-SA 3.0
+shot_027.jpg|8|Bundesarchiv, Bild 183-1984-0607-302 / Thomas Lehmann / CC-BY-SA 3.0
+shot_028.jpg|8|Bundesarchiv, Bild 183-24184-0001 / Quaschinsky, Hans-Günter / CC-BY-SA 3.0
+shot_029.jpg|8|Bundesarchiv, Bild 183-62162-0005 / Günter Weiß / CC-BY-SA 3.0
+shot_030.jpg|8|Bundesarchiv, Bild 183-70980-0001 / Pommerening / CC-BY-SA 3.0
+shot_031.jpg|8|Bundesarchiv, Bild 183-72435-0001 / Eva Brueggmann / CC-BY-SA 3.0
+shot_032.jpg|8|Bundesarchiv, Bild 183-31139-0003 / Unknown authorUnknown author / CC-BY-SA 3.0
+shot_033.jpg|8|Bundesarchiv, Bild 183-61714-0004 / Schmidt / CC-BY-SA 3.0
+shot_034.jpg|8|Bundesarchiv, Bild 183-61714-0005 / Schmidt / CC-BY-SA 3.0
+shot_035.jpg|8|Bundesarchiv, Bild 183-61714-0007 / Schmidt / CC-BY-SA 3.0
+shot_036.jpg|8|Bundesarchiv, Bild 183-61714-0008 / Schmidt / CC-BY-SA 3.0
+shot_037.jpg|8|Bundesarchiv, Bild 183-14499-0007 / Schmidtke / CC-BY-SA 3.0
+shot_038.jpg|8|Bundesarchiv, Bild 183-19650-0003 / Illner / CC-BY-SA 3.0
+shot_039.jpg|8|Bundesarchiv, Bild 183-1983-0421-414 / Klaus Franke / CC-BY-SA 3.0
+shot_040.jpg|8|Bundesarchiv, Bild 183-1989-1110-034 / Bernd Settnik / CC-BY-SA 3.0
+shot_041.jpg|8|Bundesarchiv, Bild 183-21891-0002 / Wilhelm Biscan / CC-BY-SA 3.0
+shot_042.jpg|8|Bundesarchiv, Bild 183-73079-0001 / Weiß / CC-BY-SA 3.0
+shot_043.jpg|8|Bundesarchiv, Bild 183-86267-0002 / Friedrich Gahlbeck / CC-BY-SA 3.0
+shot_044.jpg|8|Bundesarchiv, Bild 183-89569-0002 / Irene Eckleben / CC-BY-SA 3.0
+shot_045.jpg|8|Bundesarchiv, Bild 183-A0801-0010-001 / Stöhr / CC-BY-SA 3.0
+shot_046.jpg|8|Bundesarchiv, Bild 183-B0827-0009-003 / Stöhr / CC-BY-SA 3.0
+shot_047.jpg|8|Bundesarchiv, Bild 183-09057-0002 / Rudolph / CC-BY-SA 3.0
+shot_048.jpg|8|Bundesarchiv, Bild 183-17146-0023 / Klein / CC-BY-SA 3.0
+shot_049.jpg|8|Bundesarchiv, Bild 183-22289-0001 / Bauernbild / CC-BY-SA 3.0
+shot_050.jpg|8|Bundesarchiv, Bild 183-22289-0002 / Bauernbild / CC-BY-SA 3.0
+shot_051.jpg|8|Bundesarchiv, Bild 183-1990-0223-019 / Zimmermann, Peter / CC-BY-SA 3.0
+shot_052.jpg|8|Bundesarchiv, Bild 183-1990-0731-016 / Peer Grimm / CC-BY-SA 3.0
+shot_053.jpg|8|Bundesarchiv, Bild 183-1990-0731-017 / Peer Grimm / CC-BY-SA 3.0
+shot_054.jpg|8|Bundesarchiv, Bild 183-1990-0802-026 / Hirschberger, Ralph / CC-BY-SA 3.0
+shot_055.jpg|8|Bundesarchiv, Bild 183-1990-0822-001 / Hirschberger, Ralph / CC-BY-SA 3.0
+shot_056.jpg|8|Bundesarchiv, Bild 183-1989-0429-007 / Uhlemann, Thomas / CC-BY-SA 3.0
+shot_057.jpg|8|Bundesarchiv, Bild 183-N1215-0011 / Ulrich Haessler / CC-BY-SA 3.0
+shot_058.jpg|8|Bundesarchiv, Bild 183-N1218-0034 / Wolfgang Thieme / CC-BY-SA 3.0
+shot_059.jpg|8|Bundesarchiv, Bild 183-13940-0001 / Klein / CC-BY-SA 3.0
+shot_060.jpg|8|Bundesarchiv, Bild 183-13940-0002 / Klein / CC-BY-SA 3.0
+shot_061.jpg|8|Bundesarchiv, Bild 183-22372-0001 / Heinz Funck / CC-BY-SA 3.0
+shot_062.jpg|8|Bundesarchiv, Bild 183-22372-0003 / Heinz Funck / CC-BY-SA 3.0
+shot_063.jpg|8|Bundesarchiv, Bild 183-64682-0001 / Hans-Günter Quaschinsky / CC-BY-SA 3.0
+shot_064.jpg|8|Bundesarchiv, Bild 183-12034-0016 / Köhler, Gustav / CC-BY-SA 3.0
+shot_065.jpg|8|Bundesarchiv, Bild 183-19904-0015 / Krueger / CC-BY-SA 3.0
+shot_066.jpg|8|Bundesarchiv, Bild 183-20149-0001 / Braun / CC-BY-SA 3.0
+shot_067.jpg|8|Bundesarchiv, Bild 183-25839-0001 / Wilhelm Biscan / CC-BY-SA 3.0
+shot_068.jpg|8|Bundesarchiv, Bild 183-29718-0003 / Löwe / CC-BY-SA 3.0
+shot_069.jpg|8|Bundesarchiv, Bild 183-1982-1213-003 / Benno Bartocha / CC-BY-SA 3.0
+shot_070.jpg|8|Bundesarchiv, Bild 183-1984-1031-022 / Wolfried Paetzold / CC-BY-SA 3.0
+shot_071.jpg|8|Bundesarchiv, Bild 183-1986-0502-019 / Wolfried Paetzold / CC-BY-SA 3.0
+shot_072.jpg|8|Bundesarchiv, Bild 183-1989-0710-025 / Jürgen Ludwig / CC-BY-SA 3.0
+shot_073.jpg|8|Bundesarchiv, Bild 183-23816-0014 / Horst Siegert / CC-BY-SA 3.0
+shot_074.jpg|8|Bundesarchiv, Bild 183-29407-0002 / Krueger / CC-BY-SA 3.0
+shot_075.jpg|8|Bundesarchiv, Bild 183-29407-0003 / Krueger / CC-BY-SA 3.0
+shot_076.jpg|8|Bundesarchiv, Bild 183-1983-0151-002 / Benno Bartocha / CC-BY-SA 3.0
+shot_077.jpg|8|Bundesarchiv, Bild 183-1984-0421-004 / Hartmut Reiche / CC-BY-SA 3.0
+shot_078.jpg|8|Bundesarchiv, Bild 183-1984-0424-002 / Benno Bartocha / CC-BY-SA 3.0
+shot_079.jpg|8|Bundesarchiv, Bild 183-1988-0421-021 / Ritter, Steffen / CC-BY-SA 3.0
+shot_080.jpg|8|Bundesarchiv, Bild 183-15310-0001 / Rösener (Roesener) / CC-BY-SA 3.0
+shot_081.jpg|8|Bundesarchiv, Bild 183-15310-0002 / Rösener (Roesener) / CC-BY-SA 3.0
+shot_082.jpg|8|Bundesarchiv, Bild 183-15310-0003 / Rösener (Roesener) / CC-BY-SA 3.0
+shot_083.jpg|8|Bundesarchiv, Bild 183-15310-0004 / Rösener (Roesener) / CC-BY-SA 3.0
+shot_084.jpg|8|Bundesarchiv, Bild 183-15310-0005 / Rösener (Roesener) / CC-BY-SA 3.0
+shot_085.jpg|8|Bundesarchiv, Bild 183-18053-0006 / Illner / CC-BY-SA 3.0
+shot_086.jpg|8|Bundesarchiv, Bild 183-1987-0507-025 / Helmut Schaar / CC-BY-SA 3.0
+shot_087.jpg|8|Bundesarchiv, Bild 183-1988-0907-019 / Helmut Schaar / CC-BY-SA 3.0
+shot_088.jpg|8|Bundesarchiv, Bild 183-1988-0907-020 / Helmut Schaar / CC-BY-SA 3.0
+shot_089.jpg|8|Bundesarchiv, Bild 183-1984-1126-312 / UnknownUnknown / CC-BY-SA 3.0
+shot_090.jpg|8|Bundesarchiv, Bild 183-1984-1126-313 / Unknown authorUnknown author / CC-BY-SA 3.0
+shot_091.jpg|8|Bundesarchiv, Bild 183-1986-0324-023 / Helmut Schaar / CC-BY-SA 3.0
+shot_092.jpg|8|Bundesarchiv, Bild 183-09061-0001 / Köhler, Gustav / CC-BY-SA 3.0
+shot_093.jpg|8|Bundesarchiv, Bild 183-09061-0002 / Köhler, Gustav / CC-BY-SA 3.0
+shot_094.jpg|8|Bundesarchiv, Bild 183-09061-0003 / Köhler, Gustav / CC-BY-SA 3.0
+shot_095.jpg|8|Bundesarchiv, Bild 183-14827-0001 / Höhne, Erich; Pohl, Erich / CC-BY-SA 3.0
+shot_096.jpg|8|Bundesarchiv, Bild 183-1982-0413-007 / Ulrich Haessler / CC-BY-SA 3.0
+shot_097.jpg|8|Bundesarchiv, Bild 183-1989-1110-045 / Bernd Settnik / CC-BY-SA 3.0
+shot_098.jpg|8|Bundesarchiv, Bild 183-B0325-0091-001 / Heinz Koch / CC-BY-SA 3.0
+shot_099.jpg|8|Bundesarchiv, Bild 183-L0815-0017 / Dieter Demme / CC-BY-SA 3.0
