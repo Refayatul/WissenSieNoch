@@ -4,7 +4,8 @@ shots.txt format, one per line:  image_filename|seconds|attribution (attribution
 Usage: python3 build_video.py"""
 import pathlib, subprocess, sys
 
-W, H, FPS = 1280, 720, 25
+# Standard 1440p (2560x1440) - guarantees YouTube's premium VP9/AV01 high-bitrate codec
+W, H, FPS = 2560, 1440, 25
 root = pathlib.Path(".")
 tmp = root / "tmp"; tmp.mkdir(exist_ok=True)
 
@@ -47,7 +48,10 @@ lines.append(f"file '{(tmp / f'{len(shots)-1:03}.png').resolve()}'")  # concat q
 (tmp / "list.txt").write_text("\n".join(lines) + "\n")
 (root / "credits.txt").write_text("\n".join(credits) + "\n", encoding="utf-8")
 
-style = "FontName=DejaVu Sans,FontSize=18,Bold=1,PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,BorderStyle=1,Outline=2,Shadow=0,MarginV=28"
+font_size = int(34 * H / 1440)
+margin_v = int(52 * H / 1440)
+outline_w = max(2, int(3 * H / 1440))
+style = f"FontName=DejaVu Sans,FontSize={font_size},Bold=1,PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,BorderStyle=1,Outline={outline_w},Shadow=0,MarginV={margin_v}"
 vf = f"fps={FPS},format=yuv420p"
 if (root / "captions.srt").exists():
     vf += f",subtitles=captions.srt:force_style='{style}'"
