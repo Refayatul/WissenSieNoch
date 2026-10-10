@@ -50,7 +50,7 @@ def search_commons(query, limit=15):
         "gsrlimit": limit,
         "prop": "imageinfo",
         "iiprop": "url|size|extmetadata|mime",
-        "iiurlwidth": 500,
+        "iiurlwidth": 1440,
         "format": "json"
     }
     url = "https://commons.wikimedia.org/w/api.php?" + urllib.parse.urlencode(params)

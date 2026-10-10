@@ -182,6 +182,52 @@ for s in sentences:
     assert '[' not in s and ']' not in s, f"Bracket: {s}"
     assert '(' not in s and ')' not in s, f"Parenthesis: {s}"
 
+import statistics
+
+# --- yt-winter ProfitDecoded Spoken Naturalness & AI Pattern Engine ---
+def yt_winter_spoken_validation(sentences):
+    lens = []
+    for i, s in enumerate(sentences, 1):
+        words = s.split()
+        wcnt = len(words)
+        lens.append(wcnt)
+        
+        # 1. yt-winter: Max spoken length for lung capacity
+        if wcnt > 25:
+            raise ValueError(f"Sentence {i} is too long to narrate clearly ({wcnt} words): {s}")
+            
+        # 2. yt-winter: No written punctuation that fails TTS (brackets/parentheses)
+        if any(c in s for c in ['[', ']', '(', ')', ';', '#']):
+            raise ValueError(f"Sentence {i} contains unspeakable written punctuation: {s}")
+            
+        # 3. yt-winter: Max 3 numbers per sentence (audio cognitive overload)
+        nums = len(re.findall(r'\b\d[\d,.]*\b', s))
+        if nums >= 3:
+            raise ValueError(f"Sentence {i} has too many numbers to follow by ear ({nums}): {s}")
+            
+        # 4. yt-winter: Max 3 commas per sentence (nested clauses kill audio retention)
+        commas = s.count(',')
+        if commas >= 4:
+            raise ValueError(f"Sentence {i} has too many nested clauses ({commas} commas): {s}")
+            
+        # 5. yt-winter: Corporate/AI-speak penalty (Translated to German)
+        corporate_words = [r'\bbezüglich\b', r'\bhinsichtlich\b', r'\bin Bezug auf\b', r'\bsignifikante\b', r'\bSynergie', r'\bParadigm']
+        for cw in corporate_words:
+            if re.search(cw, s, re.IGNORECASE):
+                print(f"[yt-winter WARNING] Corporate/AI phrasing detected in sentence {i}: {s}")
+
+    # 6. yt-winter: Sentence Length Burstiness (Coefficient of Variation)
+    # AI generates uniform sentence lengths. Humans mix short (2-5 words) and long (15-20 words).
+    if len(lens) > 8:
+        mean_len = statistics.mean(lens)
+        stdev = statistics.stdev(lens)
+        cv = stdev / mean_len
+        # yt-winter AI threshold is CV < 0.42
+        if cv < 0.35:  # Slightly relaxed for German
+            print(f"[yt-winter WARNING] Script lacks burstiness (CV {cv:.2f} < 0.35). It sounds like a monotonous AI.")
+            
+yt_winter_spoken_validation(sentences)
+
 # Save to script.txt as plain lines
 script_path = pathlib.Path("script.txt")
 script_path.write_text("\n".join(sentences) + "\n", encoding="utf-8")
