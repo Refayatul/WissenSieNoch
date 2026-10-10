@@ -17,8 +17,17 @@ def dur(path):
                           "-of", "csv=p=0", str(path)], capture_output=True, text=True, check=True)
     return float(out.stdout.strip())
 
+
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("--chunk", type=int, help="Chunk index")
+parser.add_argument("--total-chunks", type=int, help="Total chunks")
+parser.add_argument("--mux-final", action="store_true")
+args = parser.parse_args()
+
 shots = []
 for line in (root / "shots.txt").read_text(encoding="utf-8").splitlines():
+
     if not line.strip() or line.startswith("#"):
         continue
     p = [x.strip() for x in line.split("|")]
@@ -34,6 +43,15 @@ elif total > audio_len + 1:
 
 lines, credits = [], []
 for i, (img, secs, attr) in enumerate(shots):
+    if args.total_chunks and i % args.total_chunks != args.chunk:
+        continue
+    if args.mux_final:
+        norm = tmp / f"{i:03}.mp4"
+        lines.append(f"file '{norm.resolve()}'")
+        if attr and attr not in credits:
+            credits.append(attr)
+        continue
+
     src = root / "images" / img
     if not src.exists():
         sys.exit(f"missing image: {src}")
@@ -70,6 +88,10 @@ for i, (img, secs, attr) in enumerate(shots):
     lines.append(f"file '{norm.resolve()}'")
     if attr and attr not in credits:
         credits.append(attr)
+
+if args.total_chunks:
+    print(f"Finished rendering chunk {args.chunk}")
+    sys.exit(0)
 
 (tmp / "list.txt").write_text("\n".join(lines) + "\n")
 (root / "credits.txt").write_text("\n".join(credits) + "\n", encoding="utf-8")

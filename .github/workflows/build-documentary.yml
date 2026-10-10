@@ -1,4 +1,4 @@
-name: Build German Documentary
+name: Build German Documentary (Render Farm)
 
 on:
   push:
@@ -10,63 +10,98 @@ on:
   workflow_dispatch:
 
 jobs:
-  render:
+  prep-and-render:
     runs-on: ubuntu-latest
-    
+    strategy:
+      matrix:
+        chunk: [0, 1, 2, 3, 4] # 5 Concurrent Servers
+      fail-fast: false
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-
-      - name: Install System Dependencies (FFMPEG)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
-
-      - name: Install Python Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install piper-tts faster-whisper ffmpeg-normalize
-
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - run: python -m pip install --upgrade pip && pip install piper-tts faster-whisper
+      
+      # We only need TTS/Images on chunk 0 to save API/compute on others, 
+      # but shots.txt length is needed by all. Wait, images are needed by all chunks!
+      - name: Fetch 2K Images (fetch_images.py)
+        run: python fetch_images.py
+        
       - name: Download Piper Voice Model
+        if: matrix.chunk == 0
         run: |
           wget https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0/de/de_DE/thorsten/high/de_DE-thorsten-high.onnx -O de_DE-thorsten-high.onnx
           wget https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0/de/de_DE/thorsten/high/de_DE-thorsten-high.onnx.json -O de_DE-thorsten-high.onnx.json
-
-      - name: Run TTS Synthesis (run_voice.sh)
+          
+      - name: Run TTS Synthesis
+        if: matrix.chunk == 0
         run: |
-          # Patch run_voice.sh to use the global piper command since we installed it via pip
           sed -i 's|/home/kai/Downloads/projects/German/.venv/bin/piper|piper|g' run_voice.sh
           bash run_voice.sh
-
-      - name: Generate Captions (captions.py)
-        run: |
           python captions.py narration.wav captions.srt
-
-      - name: Fetch 2K Images (fetch_images.py)
+          
+      # Since only chunk 0 makes narration, others need a dummy narration to calculate total length
+      - name: Mock narration for other chunks
+        if: matrix.chunk != 0
         run: |
-          python fetch_images.py
+          ffmpeg -f lavfi -i anullsrc=r=44100:cl=mono -t 600 -q:a 9 -acodec libmp3lame narration.wav
+          
+      - name: Render Video Chunk (Distributed Farm)
+        run: python build_video.py --chunk ${{ matrix.chunk }} --total-chunks 5
+        
+      - name: Upload Chunk Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: render-chunk-${{ matrix.chunk }}
+          path: tmp/*.mp4
+          
+      - name: Upload Audio Artifacts
+        if: matrix.chunk == 0
+        uses: actions/upload-artifact@v4
+        with:
+          name: audio-assets
+          path: |
+            narration.wav
+            captions.srt
+            music.mp3
 
-      - name: Render Final Video (build_video.py)
-        run: |
-          python build_video.py
+  merge:
+    needs: prep-and-render
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - run: pip install ffmpeg-normalize
 
+      - name: Download All Chunks
+        uses: actions/download-artifact@v4
+        with:
+          pattern: render-chunk-*
+          merge-multiple: true
+          path: tmp/
+          
+      - name: Download Audio Assets
+        uses: actions/download-artifact@v4
+        with:
+          name: audio-assets
+          path: .
+          
+      - name: Mux Final Documentary
+        run: python build_video.py --mux-final
+        
       - name: Master Audio (EBU R128)
         run: |
-          # Normalizes the audio to broadcast standard -14 LUFS
-          # -pr copies the video stream without re-encoding (saves time/quality)
           ffmpeg-normalize video.mp4 -pr -c:a aac -b:a 192k -o video_mastered.mp4
           mv video_mastered.mp4 video.mp4
-
-      - name: Upload Video Artifact
+          
+      - name: Upload Final Master
         uses: actions/upload-artifact@v4
         with:
           name: german-documentary
-          path: |
-            video.mp4
-            credits.txt
+          path: video.mp4
           retention-days: 5
