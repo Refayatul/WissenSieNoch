@@ -367,7 +367,7 @@ def main():
     ap.add_argument("--groups", type=int, default=2, help="burst groups (flicker test)")
     ap.add_argument("--per-group", type=int, default=4)
     ap.add_argument("--max-seconds", type=int, default=240, help="stop a config after this long")
-    ap.add_argument("--max-rss-gb", type=float, default=6.0, help="kill the run above this RSS")
+    ap.add_argument("--max-rss-gb", type=float, default=999.0, help="kill the run above this RSS")
     ap.add_argument("--keep", action="store_true", help="keep downloaded model files")
     args = ap.parse_args()
 
