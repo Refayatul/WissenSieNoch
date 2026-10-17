@@ -1,0 +1,102 @@
+name: seg-bench
+
+# Run by hand: Actions tab -> seg-bench -> Run workflow.
+# Every matrix job runs on its own fresh 2-vCPU runner (same class as production) so RAM / CPU numbers are clean.
+
+on:
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "Only run jobs whose name matches one of these (comma separated, substring match). Blank = all."
+        default: ""
+      frames:
+        description: "Still frames per config"
+        default: "8"
+
+jobs:
+  plan:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.m.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: m
+        env:
+          ONLY: ${{ inputs.only }}
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os, sys
+          only = [s.strip() for s in os.environ.get("ONLY", "").split(",") if s.strip()]
+          cfgs = json.load(open("configs.json"))
+          if only:
+              cfgs = [c for c in cfgs if any(o in c["name"] for o in only)]
+          if not cfgs:
+              sys.exit("no job matches 'only'")
+          print("matrix=" + json.dumps({"include": cfgs}))
+          PY
+
+  bench:
+    name: ${{ matrix.name }}
+    needs: plan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    env:
+      HF_HUB_DISABLE_TELEMETRY: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Machine info
+        run: |
+          lscpu | grep -E 'Model name|^CPU\(s\)|Thread|Flags' | cut -c1-160 || true
+          free -m
+          ls samples | head -50
+      - name: Install (ONNX)
+        run: pip install --quiet numpy opencv-python-headless psutil "onnxruntime>=1.25"
+      - name: Install (PyTorch CPU)
+        if: ${{ matrix.torch }}
+        run: |
+          pip install --quiet torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          pip install --quiet transformers timm einops kornia huggingface_hub safetensors
+      - name: Benchmark
+        run: >
+          python bench.py --threads ${{ matrix.threads || 2 }} --frames ${{ inputs.frames || 8 }}
+          --max-rss-gb 6.0 ${{ matrix.args }} --out results/${{ matrix.name }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: results-${{ matrix.name }}
+          path: results/${{ matrix.name }}
+          if-no-files-found: warn
+          retention-days: 14
+
+  report:
+    needs: bench
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install --quiet numpy opencv-python-headless
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: results-*
+          path: results
+      - name: Build report
+        run: |
+          python report.py results --samples samples --out report
+          cat report/summary.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: report
+          path: report
+          retention-days: 30
