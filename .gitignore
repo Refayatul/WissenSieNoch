@@ -4,3 +4,5 @@ results/
 report*/
 __pycache__/
 *.part
+full_run_artifacts/
+BENCHMARK_REPORT_FOR_CLAUDE.md

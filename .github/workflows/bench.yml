@@ -43,7 +43,7 @@ jobs:
     timeout-minutes: 40
     strategy:
       fail-fast: false
-      max-parallel: 4
+      max-parallel: 1
       matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
     env:
       HF_HUB_DISABLE_TELEMETRY: "1"
@@ -52,6 +52,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Expand Swap to 12 GB
+        run: |
+          sudo swapoff -a || true
+          sudo rm -f /swapfile || true
+          sudo fallocate -l 12G /swapfile || sudo dd if=/dev/zero of=/swapfile bs=1M count=12288
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          free -h
       - name: Machine info
         run: |
           lscpu | grep -E 'Model name|^CPU\(s\)|Thread|Flags' | cut -c1-160 || true
