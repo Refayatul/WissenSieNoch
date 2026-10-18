@@ -1,4 +1,7 @@
 [
+  {"name": "turbo_general_int8",       "torch": false, "args": "--id turbo_general_int8 --threads 2 --frames 2 --groups 0 --max-seconds 300"},
+  {"name": "turbo_matting_int8",       "torch": false, "args": "--id turbo_matting_int8 --threads 2 --frames 2 --groups 0 --max-seconds 300"},
+  {"name": "turbo_matting_fp32",       "torch": false, "args": "--id turbo_matting_fp32 --threads 2 --frames 2 --groups 0 --max-seconds 300"},
   {"name": "base_lite_stock_onnx",     "torch": false, "args": "--id lite_onnx --frames 2 --groups 0 --max-seconds 300"},
   {"name": "base_general_stock_onnx",  "torch": false, "args": "--id general_onnx --frames 2 --groups 0 --max-seconds 300"},
   {"name": "base_matting_stock_onnx",  "torch": false, "args": "--id matting_onnx --frames 2 --groups 0 --max-seconds 300"},

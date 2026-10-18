@@ -33,7 +33,21 @@ UNIT = ((0.0, 0.0, 0.0), (1.0, 1.0, 1.0))  # only /255, no mean/std (what produc
 # kind=torch: HuggingFace weights through transformers, any resolution (multiple of `mult`).
 HF_SENTY = "https://huggingface.co/senty-au/BiRefNet_lite-ONNX-dynamic/resolve/main/onnx/model.onnx"
 HF_GRAZ = "https://huggingface.co/Grazier/birefnet-matting-deformconv/resolve/main/"
+TURBO = "https://github.com/Refayatul/BiRefNet-Turbo/releases/download/v1.0.0/"
 MODELS = {
+    # ---- BiRefNet-Turbo Deliverables (Hang-Proof DeformConv INT8/FP32 1024x576) ----
+    "turbo_general_int8": dict(kind="onnx", url=TURBO + "birefnet_general_swinL_1024x576_int8.onnx",
+                               sha256="9280cfb34b3e43d445957d6ec9c98b208a899e486b987196f77c0bef9c60407f",
+                               norm=IMAGENET, out=0, res="576x1024", mult=32,
+                               note="BiRefNet-Turbo Swin-L GENERAL INT8 (1024x576 static, hang-proof, pass)"),
+    "turbo_matting_int8": dict(kind="onnx", url=TURBO + "birefnet_matting_swinL_1024x576_int8.onnx",
+                               sha256="b22ffbc5de27a193b061e6986964e4eeb4431d2b747d4c62107fc29c057917b4",
+                               norm=IMAGENET, out=0, res="576x1024", mult=32,
+                               note="BiRefNet-Turbo Swin-L MATTING INT8 (1024x576 static, hang-proof)"),
+    "turbo_matting_fp32": dict(kind="onnx", url=TURBO + "birefnet_matting_swinL_1024x576_fp32.onnx",
+                               sha256="dae1d260a29ddd6b11c3acc0d038d5f17b284975e70a71860e2901abcfc457f6",
+                               norm=IMAGENET, out=0, res="576x1024", mult=32,
+                               note="BiRefNet-Turbo Swin-L MATTING FP32 (1024x576 static, hang-proof reference)"),
     # ---- native DeformConv ONNX (community re-exports of official BiRefNet weights) ----
     "lite_dc_onnx": dict(kind="onnx", url=HF_SENTY, sha256="1e0da42f0fde010e32e938bad388457ecefe35806fde9d923421997861ae9391",
                          norm=IMAGENET, out=0, res="512x512", mult=64,
@@ -246,6 +260,7 @@ def crop_content(p, box, W, H, prep):
 def make_onnx_runner(path, m, args):
     import onnxruntime as ort
     so = ort.SessionOptions()
+    so.enable_cpu_mem_arena = False
     so.intra_op_num_threads = args.threads
     so.inter_op_num_threads = 1
     so.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
