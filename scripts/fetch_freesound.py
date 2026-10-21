@@ -34,17 +34,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 def load_api_key():
-    key = os.environ.get("FREESOUND_API_KEY")
-    if key:
-        return key
+    for var in ["FREESOUND_API_KEY", "FREESOUND_CLIENT_SECRET", "FREESOUND_TOKEN"]:
+        val = os.environ.get(var)
+        if val and val != "your_api_key_here":
+            return val
 
     for env_path in [BASE_DIR / ".env", Path("/mnt/programming/.env")]:
         if env_path.exists():
             with open(env_path, "r") as f:
                 for line in f:
                     line = line.strip()
-                    if line.startswith("FREESOUND_API_KEY="):
-                        return line.split("=", 1)[1].strip()
+                    for prefix in ["FREESOUND_API_KEY=", "FREESOUND_CLIENT_SECRET=", "FREESOUND_TOKEN="]:
+                        if line.startswith(prefix):
+                            v = line.split("=", 1)[1].strip()
+                            if v and v != "your_api_key_here":
+                                return v
 
     return None
 
@@ -67,38 +71,32 @@ def search_freesound(query, api_key, min_duration=30, max_duration=600):
         return data.get("results", [])
 
 
-def download_sound(sound_id, api_key, output_path):
-    """Download a sound from Freesound using the API."""
-    # Get the download URL
-    url = f"https://freesound.org/apiv2/sounds/{sound_id}/download/?token={api_key}"
-    req = urllib.request.Request(url, headers={"User-Agent": "AmbiencePipeline/1.0"})
+def download_sound(sound, output_path):
+    """Download HQ sound preview from Freesound and convert to PCM WAV."""
+    previews = sound.get("previews", {})
+    hq_url = previews.get("preview-hq-mp3") or previews.get("preview-hq-ogg")
+    if not hq_url:
+        raise ValueError(f"No HQ audio preview available for sound {sound.get('id')}")
+
+    req = urllib.request.Request(hq_url, headers={"User-Agent": "AmbiencePipeline/1.0"})
 
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    # Freesound download returns the raw file
-    tmp_path = output_path.with_suffix(".tmp")
-    try:
-        with urllib.request.urlopen(req, timeout=300) as resp, open(tmp_path, "wb") as f:
-            total = 0
-            while chunk := resp.read(1 << 20):
-                f.write(chunk)
-                total += len(chunk)
-                print(f"\r  Downloaded {total / (1024*1024):.1f} MB", end="", flush=True)
-            print()
-    except urllib.error.HTTPError as e:
-        if e.code == 401:
-            print("ERROR: Freesound API key is invalid or expired.")
-            print("Get a free key at: https://freesound.org/apiv2/apply/")
-            sys.exit(1)
-        raise
+    tmp_path = output_path.with_suffix(".tmp.mp3")
+    with urllib.request.urlopen(req, timeout=120) as resp, open(tmp_path, "wb") as f:
+        total = 0
+        while chunk := resp.read(1 << 20):
+            f.write(chunk)
+            total += len(chunk)
+            print(f"\r  Downloaded {total / (1024*1024):.1f} MB", end="", flush=True)
+        print()
 
-    # Convert to 44100 Hz WAV (Claude spec: 44.1 kHz or higher)
+    # Convert to 44100 Hz WAV with -3 dBFS true-peak limiter
     subprocess.run([
         "ffmpeg", "-y", "-v", "error",
         "-i", str(tmp_path),
         "-c:a", "pcm_s16le", "-ar", "44100", "-ac", "1",
-        # Limiter: peaks at or below -3 dBFS (Claude File 2, §0 + File 1, §3.1)
         "-af", "alimiter=limit=0.708:attack=5:release=50",
         str(output_path)
     ], check=True)
@@ -186,7 +184,7 @@ def main():
     out_path = args.out or f"/mnt/programming/German/audio/freesound_{safe_query}_{selected['id']}.wav"
 
     print(f"Downloading to {out_path}...")
-    download_sound(selected["id"], api_key, out_path)
+    download_sound(selected, out_path)
 
     log_licence(selected, out_path)
 
