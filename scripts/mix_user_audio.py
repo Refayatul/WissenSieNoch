@@ -19,7 +19,7 @@ def main():
     parser.add_argument("--inputs", nargs="+", required=True, help="List of input audio files (e.g. take1.wav take2.wav)")
     parser.add_argument("--crossfade", type=int, default=15, help="Crossfade duration between tracks in seconds")
     parser.add_argument("--duration", type=int, default=1815, help="Target total duration in seconds (default 1815)")
-    parser.add_argument("--out", default="audio/mix.wav", help="Output file path")
+    parser.add_argument("--out", default="/mnt/programming/German/audio/mix.wav", help="Output file path")
     args = parser.parse_args()
 
     out_path = Path(args.out)

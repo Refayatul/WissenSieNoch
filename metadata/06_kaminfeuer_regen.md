@@ -1,25 +1,29 @@
 # Konzept 6: Kaminfeuer und Regen
 
-## YouTube Video-Titel
-`Kaminfeuer und Regen | 10 Stunden Knistern & Regengeräusche zum Einschlafen`
-
-## YouTube Video-Beschreibung
-```text
-Sanftes Kaminfeuer-Knistern kombiniert mit beruhigendem Regen am Fenster – 10 Stunden pure Gemütlichkeit.
-Wärmende Kamin-Atmosphäre und rhythmischer Regen schaffen das perfekte Ambiente für einen tiefen Schlaf.
-
-Zeitmarken:
-00:00:00 - Gemütliches Kaminfeuer & Regen
-02:00:00 - Sanftes Holzknistern
-05:00:00 - Tiefe Nachtentspannung
-08:00:00 - Glühendes Kaminfeuer am Morgen
-
-Lizenz & Herkunft:
-Bildmaterial: Pexels (Pexels-Lizenz)
-Audio: Eigenes Sleep-Mastering (-16 LUFS, True-Peak -3 dBFS)
-
-#kaminfeuer #regengeräusche #feuerknistern #einschlafen #schlafgeräusche #gemütlich
+## Titel (Claude File 2, §2 — exact template)
+```
+Kaminfeuer und Regen | 10 Stunden Knistern & Regengeräusche zum Einschlafen
 ```
 
-## Video-Tags
-`kaminfeuer und regen, regen kaminfeuer, feuer knistern zum einschlafen, regengeräusche und kaminfeuer, gemütliches kaminfeuer, fireplace and rain, schlafgeräusche kamin`
+## Beschreibung
+```
+Reine Regengeräusche mit sanftem Kaminfeuer-Knistern – 10 Stunden, ohne Musik, ohne Sprache.
+Gleichmäßige Lautstärke, kein plötzlicher Donner.
+Aufgenommen: [Ort/Quelle hier eintragen]. Lizenz: [CC0/eigene Aufnahme].
+
+Geeignet als Einschlafhilfe oder zur Entspannung.
+
+Bildmaterial: Pexels (freie Nutzung).
+```
+
+## Tags (minimal)
+```
+kaminfeuer und regen, regengeräusche zum einschlafen, feuer knistern
+```
+
+## Audio-Hinweis (Claude File 2, §2 + §4)
+Fire crackle at LOW level under steady rain. The fire MUST loop seamlessly
+(use acrossfade per layer — Claude-tested mechanism).
+
+## Quelle / Evidenz
+Evidence: 3-hour rain/fireplace piece, 48.5M views.

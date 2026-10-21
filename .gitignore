@@ -1,22 +1,23 @@
+# Python
 .venv/
+__pycache__/
+
+# Seg-bench artifacts (old history pipeline)
 _models/
 results/
 report*/
-__pycache__/
-*.part
 full_run_artifacts/
 BENCHMARK_REPORT_FOR_CLAUDE.md
-.env
-work/
-tmp/
-out/*.mp4
-out/*.mkv
-clips/*.mp4
-audio/*.wav
+*.part
+
+# Heavy media (lives on /mnt/programming/German/)
+*.mp4
+*.wav
 *.onnx
 *.onnx.json
-narration.wav
-raw.wav
-video.mp4
-*.mp4
 
+# Environment
+.env
+
+# Scratch
+tmp/

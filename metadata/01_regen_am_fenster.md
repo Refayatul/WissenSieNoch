@@ -1,37 +1,36 @@
 # Konzept 1: Regen am Fenster
 
-## YouTube Video-Titel
-`Regen am Fenster | 10 Stunden Regengeräusche zum Einschlafen | Ohne Musik`
+## Titel (Claude File 2, §2 — exact template)
+```
+Regen am Fenster | 10 Stunden Regengeräusche zum Einschlafen | Ohne Musik
+```
+73 chars. Bilingual tail "| Rain Sounds" would make 87 — fits under 100, add if testing.
 
-*(Alternative mit englischem Tail: `Regen am Fenster | 10 Stunden Regengeräusche zum Einschlafen | Rain Sounds`)*
+## Beschreibung (Claude File 2, Notes — copy-ready template)
+```
+Reine Regengeräusche – 10 Stunden, ohne Musik, ohne Sprache.
+Gleichmäßige Lautstärke, kein plötzlicher Donner.
+Aufgenommen: [Ort/Quelle hier eintragen]. Lizenz: [CC0/eigene Aufnahme].
 
-## YouTube Video-Beschreibung
-```text
-Reine Regengeräusche am Fenster – 10 Stunden für tiefen Schlaf, Entspannung und innere Ruhe.
-Gleichmäßige Lautstärke, sanftes Prasseln an der Glasscheibe, garantiert ohne Musik und ohne plötzlichen Donner.
+Geeignet als Einschlafhilfe, zum Abbau von Alltagsstress oder als beruhigendes Hintergrundgeräusch beim Lernen.
 
-Zeitmarken:
-00:00:00 - Sanfter Regen am Fenster (Einschlafhilfe)
-01:00:00 - Gleichmäßiges Regenprasseln
-03:00:00 - Tiefschlaf-Atmosphäre
-06:00:00 - Beruhigende Naturgeräusche
-08:00:00 - Sanfter Ausklang
-
-Geeignet als Einschlafhilfe bei Schlaflosigkeit, zum Abbau von Alltagsstress, zur Meditation oder als beruhigendes Hintergrundgeräusch (White Noise) beim Lernen und Lesen.
-
-Lizenz & Herkunft:
-Bildmaterial: Pexels (Pexels-Lizenz, freie Nutzung)
-Audio: Eigenes Sleep-Audio-Mastering (-16 LUFS, True-Peak limitiert auf -3 dBFS, keine Copyright-Claims)
-
-#regengeräusche #einschlafen #schlafgeräusche #regen #naturgeräusche #whitenoise
+Bildmaterial: Pexels (freie Nutzung).
 ```
 
-## Video-Tags
-`regengeräusche, regengeräusche zum einschlafen, regen am fenster, geräusche zum einschlafen, einschlafhilfe, naturgeräusche zum einschlafen, regen 10 stunden, regen ohne musik, rain sounds for sleeping, sleep rain, entspannungsgeräusche, weißes rauschen`
+## Tags (Claude File 2, §3.3: "Tags: minimal")
+```
+regengeräusche zum einschlafen, regen am fenster, regengeräusche
+```
 
-## Angepinnter Kommentar (Engagement-Trigger)
-`Gute Nacht und erholsamen Schlaf! 🌧️ Welches Regengeräusch entspannt Sie am meisten – Regen am Fenster oder im Wald? Lassen Sie es uns gerne in den Kommentaren wissen!`
+## Angepinnter Kommentar
+```
+Gute Nacht! Welches Regengeräusch entspannt Sie am meisten – Regen am Fenster oder im Wald?
+```
 
-## Thumbnail-Konzept
-- **Motiv**: Gemütliches Fenster im warmen Zimmer, draußen dunkler Regen / nasse Scheibe mit glänzenden Tropfen, im Hintergrund dezente weiche Straßenlichter (Bokeh) oder eine sanfte Lampe.
-- **Text-Overlay (optional/minimal)**: "10 STUNDEN" (oben links, weiß/gold) + "REGEN AM FENSTER" (zentral). Sauber, ruhig, nicht überladen.
+## Thumbnail
+Slow rain streaks on glass, dim lamp or blurred night street. Fixed camera.
+(Claude File 2, §2 concept #1 footage guidance)
+
+## Quelle / Evidenz (Claude File 2, §2)
+Evidence: "Gentle Rain on Window" with black-screen option, 30.8M views (1.63M-sub channel).
+Indoor safety/mood scene.

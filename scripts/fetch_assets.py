@@ -209,10 +209,10 @@ def main():
     print(f"Found match: ID {selected_video['id']} by {selected_video['user']['name']}")
     print(f"Original duration: {selected_video['duration']}s | Resolution: {best_file.get('width')}x{best_file.get('height')}")
 
-    out_path = Path(args.output) if args.output else BASE_DIR / "clips" / f"{concept_name}_{args.duration}s.mp4"
+    out_path = Path(args.output) if args.output else Path("/mnt/programming/German/clips") / f"{concept_name}_{args.duration}s.mp4"
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
-    tmp_raw = BASE_DIR / "work" / f"raw_{selected_video['id']}.mp4"
+    tmp_raw = Path("/mnt/programming/German/work") / f"raw_{selected_video['id']}.mp4"
     tmp_raw.parent.mkdir(parents=True, exist_ok=True)
 
     print(f"Downloading stream from {best_file['link']}...")

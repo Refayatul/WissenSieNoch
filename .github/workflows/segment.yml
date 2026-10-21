@@ -1,0 +1,27 @@
+# Claude File 1, §4 — GitHub Actions workflow for the base segment [untested by Claude]
+# Use ONLY if local benchmark is too slow (< 0.3x). Our i5-4210U hits 1.49x so this
+# is a backup. Keep the repo PRIVATE (licence warning: Pexels clips in a public repo
+# is redistribution — Claude File 1, §2).
+name: base-segment
+on:
+  workflow_dispatch:
+    inputs:
+      copies:
+        description: "copies of the segment (1 = segment only)"
+        default: "1"
+jobs:
+  encode:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - run: |
+          CLIP=clips/window_22s.mp4 AUDIO=audio/mix.wav MODE=xfade VXF=2 ACF=15 \
+          COPIES=${{ inputs.copies }} OUT=out/segment.mp4 WORK=work bash scripts/build.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: segment
+          path: out/segment.mp4
+          retention-days: 1
+          compression-level: 0

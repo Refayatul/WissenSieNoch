@@ -1,25 +1,31 @@
-# Konzept 5: Regen im Schwarzwald / Waldregen
+# Konzept 5: Regen im Schwarzwald
 
-## YouTube Video-Titel
-`Regen im Schwarzwald | 10 Stunden Waldregen & Naturgeräusche zum Einschlafen`
-
-## YouTube Video-Beschreibung
-```text
-Sanfter Regen im dichten Schwarzwald – 10 Stunden Naturgeräusche für erholsamen Schlaf und Meditation.
-Das Tropfen auf Moos, Nadeln und Farn erzeugt einen natürlichen, gleichmäßigen Klangteppich ohne störende Geräusche.
-
-Zeitmarken:
-00:00:00 - Waldregen im Schwarzwald
-01:30:00 - Tiefe Waldruhe
-04:00:00 - Sanfter Nachtregen zwischen Tannen
-07:00:00 - Frischer Morgentau und Regen
-
-Lizenz & Herkunft:
-Bildmaterial: Pexels (Pexels-Lizenz)
-Audio: Eigenes Sleep-Mastering mit Natur-Profil (-16 LUFS, True-Peak -3 dBFS)
-
-#naturgeräusche #waldregen #schwarzwald #regengeräusche #einschlafen #schlafgeräusche
+## Titel (Claude File 2, §2 — exact template)
+```
+Regen im Schwarzwald | 10 Stunden Waldregen & Naturgeräusche zum Einschlafen
 ```
 
-## Video-Tags
-`regen im schwarzwald, regengeräusche wald, naturgeräusche zum einschlafen, waldregen zum einschlafen, regen naturgeräusche, entspannungsgeräusche natur, rain in forest`
+## Beschreibung
+```
+Reine Regengeräusche – 10 Stunden, ohne Musik, ohne Sprache.
+Gleichmäßige Lautstärke, kein plötzlicher Donner.
+Aufgenommen: [Ort/Quelle hier eintragen]. Lizenz: [CC0/eigene Aufnahme].
+
+Geeignet als Einschlafhilfe oder zur Entspannung.
+
+Bildmaterial: Pexels (freie Nutzung).
+```
+
+## Tags (minimal)
+```
+naturgeräusche zum einschlafen, regen im schwarzwald, waldregen
+```
+
+## Footage (Claude File 2, §2)
+Foggy spruce forest, static camera. Rain on leaves and needles, drips, no birds.
+
+## Hinweis (Claude File 2, §3.2)
+Local-search intent — keyword data NOT pulled for this. Check with VidIQ first.
+
+## Quelle / Evidenz
+Evidence: forest rain, 26M views from an original recorder.

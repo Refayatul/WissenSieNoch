@@ -1,25 +1,27 @@
 # Konzept 10: Regengeräusche zum Lernen & Konzentrieren
 
-## YouTube Video-Titel
-`Regengeräusche zum Lernen & Konzentrieren | 10 Stunden Regen am Fenster | Ohne Musik`
-
-## YouTube Video-Beschreibung
-```text
-Sanfter Tagesregen am Fenster – 10 Stunden kontinuierlicher Fokus für Studium, Arbeit, Deep Work und Lesen.
-Maskiert störende Umgebungsgeräusche und Büro-Lärm ohne ablenkende Melodien.
-
-Zeitmarken:
-00:00:00 - Regen am Schreibtisch (Fokus & Konzentration)
-02:00:00 - Tiefe Arbeitsphase (Deep Work)
-05:00:00 - Gleichmäßiger Lernfokus
-08:00:00 - Ruhiger Nachmittagsregen
-
-Lizenz & Herkunft:
-Bildmaterial: Pexels (Pexels-Lizenz)
-Audio: Eigenes Sleep/Study-Mastering (-16 LUFS, True-Peak -3 dBFS)
-
-#lernen #konzentration #regengeräusche #deepwork #studieren #whitenoise
+## Titel (Claude File 2, §2 — exact template)
+```
+Regengeräusche zum Lernen & Konzentrieren | 10 Stunden Regen am Fenster
 ```
 
-## Video-Tags
-`regengeräusche zum lernen, regengeräusche konzentration, regen zum lernen, weißes rauschen zum lernen, regen hintergrundgeräusch, study rain, rain for focus`
+## Beschreibung
+```
+Reine Regengeräusche – 10 Stunden, ohne Musik, ohne Sprache.
+Gleichmäßige Lautstärke, kein plötzlicher Donner.
+Aufgenommen: [Ort/Quelle hier eintragen]. Lizenz: [CC0/eigene Aufnahme].
+
+Zum konzentrierten Arbeiten und Lernen. Einschlafhilfe.
+
+Bildmaterial: Pexels (freie Nutzung).
+```
+
+## Tags (minimal)
+```
+regengeräusche zum lernen, regengeräusche zum einschlafen
+```
+
+## Hinweis (Claude File 2, §2)
+UNTESTED concept. Daytime session intent.
+Same assets as #1 ONLY if audio differs (Claude File 2, §0 — each upload its own audio).
+Daytime window, desk light. Rain on glass, level slightly higher.
