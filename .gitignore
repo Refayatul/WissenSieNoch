@@ -6,3 +6,17 @@ __pycache__/
 *.part
 full_run_artifacts/
 BENCHMARK_REPORT_FOR_CLAUDE.md
+.env
+work/
+tmp/
+out/*.mp4
+out/*.mkv
+clips/*.mp4
+audio/*.wav
+*.onnx
+*.onnx.json
+narration.wav
+raw.wav
+video.mp4
+*.mp4
+
