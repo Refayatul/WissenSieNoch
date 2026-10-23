@@ -69,10 +69,23 @@ jobs:
         run: python -m playwright install --with-deps chromium
 
       - name: System tools
+        # The ubuntu-latest image ships ffmpeg and DejaVu, so apt is skipped.
+        # Only install when something is genuinely missing, and cap the wait so a
+        # slow mirror can never hang the render (it did: 9 minutes on apt-get).
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+          set -euo pipefail
+          have_ffmpeg=0
+          have_font=0
+          command -v ffmpeg >/dev/null && have_ffmpeg=1
+          fc-list 2>/dev/null | grep -qi "DejaVu Sans" && have_font=1
+          if [ "$have_ffmpeg" = 0 ] || [ "$have_font" = 0 ]; then
+            echo "installing missing packages (ffmpeg=$have_ffmpeg font=$have_font)"
+            timeout 300 sudo apt-get update -qq || echo "apt update slow, continuing"
+            timeout 300 sudo apt-get install -y -qq --no-install-recommends ffmpeg fonts-dejavu-core \
+              || echo "apt install did not finish; will retry per-feature if needed"
+          fi
           ffmpeg -version | head -1
+          fc-list | grep -ci "dejavu" || true
 
       - name: Cache narration audio
         uses: actions/cache@v4
