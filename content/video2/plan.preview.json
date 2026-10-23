@@ -1,0 +1,49 @@
+{
+  "scenes": [
+    { "id": 1, "type": "hook", "start": 0, "end": 20 },
+    { "id": 2, "type": "question", "start": 20, "end": 45 },
+    { "id": 3, "type": "daychart", "start": 45, "end": 85 },
+    { "id": 4, "type": "bars", "start": 85, "end": 120,
+      "title": "Wartezeit auf einen Trabant",
+      "note": "Wer bestellte, wartete – und wartete",
+      "max": 15,
+      "bars": [
+        { "label": "Telefon", "value": 8, "display": "~8 Jahre", "color": "#2f6f6a" },
+        { "label": "Trabant", "value": 15, "display": "10–15 Jahre", "color": "#c8472f" },
+        { "label": "Westauto", "value": 0.2, "display": "sofort", "color": "#d9a441" }
+      ],
+      "foot": "Ein gebrauchter Trabant kostete oft mehr als ein neuer."
+    },
+    { "id": 5, "type": "compare", "start": 120, "end": 160,
+      "title": "Altbau vs. Neubau",
+      "columns": [
+        { "head": "Altbau", "year": "vor 1945", "items": ["Ofen heizen", "Kohlen tragen", "Wasser am Waschbecken", "Toilette auf halber Treppe"] },
+        { "head": "Neubau WBS 70", "year": "ab 1973", "items": ["Fernwärme", "Bad mit Wanne", "Fließend Warmwasser", "Innen-WC"] }
+      ],
+      "foot": "Für viele Familien der größte Komfortsprung ihres Lebens."
+    },
+    { "id": 6, "type": "chain", "start": 160, "end": 200,
+      "title": "Wie eine Rechnung Geschichte macht",
+      "steps": [
+        { "kicker": "URSACHE", "title": "+10 % Arbeitsnorm", "body": "Mehr Arbeit für gleichen Lohn, Baugewerbe", "accent": "#c8472f" },
+        { "kicker": "REAKTION", "title": "Streik an der Stalinallee", "body": "Bauarbeiter legen die Arbeit nieder", "accent": "#d9a441", "dark": true },
+        { "kicker": "FOLGE", "title": "Aufstand im ganzen Land", "body": "17. Juni 1953, innerhalb weniger Tage", "accent": "#c8472f" }
+      ],
+      "foot": "Ein Signal, das ein Land bewegte, war eine Rechnung."
+    },
+    { "id": 7, "type": "timeline", "start": 200, "end": 240,
+      "title": "Vierzig Jahre Alltag",
+      "events": [
+        { "year": "1949", "pos": 0.02, "label": "DDR gegründet", "color": "#c8472f" },
+        { "year": "1953", "pos": 0.2, "label": "17. Juni" },
+        { "year": "1972", "pos": 0.45, "label": "Wohnungsbauprogramm" },
+        { "year": "1974", "pos": 0.62, "label": "Intershop-Netz" },
+        { "year": "1989", "pos": 0.98, "label": "Mauerfall", "color": "#d9a441" }
+      ],
+      "foot": "Nicht der Ausnahmezustand. Der Alltag."
+    },
+    { "id": 8, "type": "quote", "start": 240, "end": 280,
+      "quote": "Wo die Uhr wohnt, da wohnt die Politik.", "by": "Der Befund" },
+    { "id": 9, "type": "end", "start": 280, "end": 310 }
+  ]
+}

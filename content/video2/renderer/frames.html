@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>WissenSieNoch · Frame Renderer</title>
+<!--
+  Deterministic motion-graphics renderer.
+
+  Every frame is a pure function of (plan, t): no wall clock, no CSS animation,
+  no network at render time (fonts are inlined before the first frame). The
+  caller drives time explicitly through window.renderFrame(t), so the same
+  second always produces the same pixels - required for chunked rendering on
+  separate GitHub Actions runners.
+
+  Scenes are declared in the Python side (scripts/video_plan.py) and handed in
+  via window.setPlan(). Each scene type is one draw function below.
+-->
+<style>
+  html,body{margin:0;padding:0;background:#0b0d10;}
+  canvas{display:block;}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+"use strict";
+const W = 2560, H = 1440;
+const cv = document.getElementById("c");
+cv.width = W; cv.height = H;
+const ctx = cv.getContext("2d", { alpha: false });
+
+/* ---------- palette: warm archival paper + DDR-era oxide red, ink, sand ---------- */
+const C = {
+  ink:      "#14171b",
+  ink2:     "#1d2228",
+  paper:    "#f3ece1",
+  paper2:   "#e6dccb",
+  sand:     "#cdb994",
+  oxide:    "#c8472f",
+  oxideDk:  "#a5351f",
+  teal:     "#2f6f6a",
+  gold:     "#d9a441",
+  white:    "#fbf8f2",
+  grey:     "#8b8577",
+  grey2:    "#55504a",
+};
+const FONT = "'InterFill','Inter','DejaVu Sans',sans-serif";
+
+let plan = null;
+
+/* ---------- deterministic helpers ---------- */
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const lerp  = (a, b, t) => a + (b - a) * t;
+const easeOut = t => 1 - Math.pow(1 - clamp(t), 3);
+const easeInOut = t => t < .5 ? 4*t : 1 - Math.pow(-2*t+2, 3)/2;
+// stable pseudo-random: time-independent, so a frame never flickers differently
+const hash = (n) => { const x = Math.sin(n * 127.1) * 43758.5453; return x - Math.floor(x); };
+function rng(seed) { let s = seed % 2147483647; if (s <= 0) s += 2147483646;
+  return () => (s = (s * 16807) % 2147483647) / 2147483647; }
+
+/* ---------- text helpers ---------- */
+function wrapLines(text, maxW, font) {
+  ctx.font = font;
+  const words = text.split(/\s+/), lines = []; let cur = "";
+  for (const w of words) {
+    const test = cur ? cur + String.fromCharCode(32) + w : w;
+    if (ctx.measureText(test).width <= maxW || !cur) cur = test;
+    else { lines.push(cur); cur = w; }
+  }
+  if (cur) lines.push(cur);
+  return lines;
+}
+function drawText(text, x, y, o) {
+  const { size = 64, weight = 600, color = C.ink, align = "left", maxW = 2000,
+          lineH = 1.18, track = 0, glow = 0, alpha = 1 } = o;
+  const font = `${weight} ${size}px ${FONT}`;
+  ctx.save();
+  ctx.globalAlpha *= alpha;
+  ctx.font = font;
+  ctx.fillStyle = color;
+  ctx.textAlign = align;
+  ctx.textBaseline = "top";
+  if (track) ctx.letterSpacing = track + "px";
+  if (glow) { ctx.shadowColor = "rgba(0,0,0,.45)"; ctx.shadowBlur = glow; }
+  const lines = maxW < 4000 ? wrapLines(text, maxW, font) : [text];
+  lines.forEach((ln, i) => {
+    const yy = y + i * size * lineH;
+    if (align === "center") ctx.fillText(ln, x, yy);
+    else if (align === "right") ctx.fillText(ln, x, yy);
+    else ctx.fillText(ln, x, yy);
+  });
+  ctx.restore();
+  return lines.length * size * lineH;
+}
+// Kinetic type: each word rises into place. No clipping, no mask - a mask on
+// canvas needs the text metrics to be exact at every font, which is where the
+// first version clipped letters. Words animate independently instead.
+function revealText(text, x, y, o, p) {
+  const size = o.size ?? 64, weight = o.weight ?? 600, lh = o.lineH ?? 1.18;
+  const maxW = o.measureW ?? 2100;
+  const font = `${weight} ${size}px ${FONT}`;
+  const rows = wrapLines(text, maxW, font);
+  const space = " ";
+  let total = 0;
+  rows.forEach(function (r) { total += r.split(space).length; });
+  let wi = 0;
+  rows.forEach(function (line, li) {
+    ctx.font = font;
+    let lx = x;
+    if (o.align === "center") lx = x - ctx.measureText(line).width / 2;
+    line.split(space).forEach(function (word) {
+      const at = (wi / Math.max(1, total)) * 0.85;
+      const q = easeOut(clamp((p - at) / 0.28));
+      wi += 1;
+      const wordW = ctx.measureText(word).width;
+      if (q > 0) {
+        ctx.save();
+        ctx.globalAlpha = q * (o.alpha ?? 1);
+        ctx.font = font;
+        ctx.fillStyle = o.color ?? C.ink;
+        ctx.textBaseline = "top";
+        ctx.textAlign = "left";
+        if (o.track) ctx.letterSpacing = o.track + "px";
+        ctx.fillText(word, lx, y + li * size * lh + (1 - q) * size * 0.3);
+        ctx.restore();
+      }
+      lx += wordW + ctx.measureText(space).width;
+    });
+  });
+  return rows.length * size * lh;
+}
+/* ---------- background: paper + moving grain + vignette ---------- */
+function bg(t, variant) {
+  const g = ctx.createLinearGradient(0, 0, W * .35, H);
+  if (variant === "dark") {
+    g.addColorStop(0, "#14181d"); g.addColorStop(.65, "#0f1216"); g.addColorStop(1, "#1a1d20");
+    ctx.fillStyle = g;
+  } else {
+    g.addColorStop(0, "#f6efe4"); g.addColorStop(.6, C.paper); g.addColorStop(1, "#e8ddca");
+    ctx.fillStyle = g;
+  }
+  ctx.fillRect(0, 0, W, H);
+}
+function grain(t, amount = 0.05) {
+  const r = rng(Math.floor(t * 24) + 7);
+  ctx.save();
+  ctx.globalAlpha = amount;
+  for (let i = 0; i < 1400; i++) {
+    const x = r() * W, y = r() * H, s = 1 + r() * 2.4;
+    ctx.fillStyle = r() > .5 ? "#000" : "#fff";
+    ctx.fillRect(x, y, s, s);
+  }
+  ctx.restore();
+}
+function vignette(strength = .42) {
+  const g = ctx.createRadialGradient(W/2, H/2, H*0.25, W/2, H/2, H*0.92);
+  g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(1, `rgba(0,0,0,${strength})`);
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+}
+function safeFrame() {
+  // subtle broadcast framing rules
+  ctx.save(); ctx.strokeStyle = "rgba(20,23,27,.10)"; ctx.lineWidth = 2;
+  ctx.strokeRect(120, 92, W - 240, H - 184); ctx.restore();
+}
+
+/* ---------- scene label ---------- */
+function sceneKicker(text, lt) {
+  const p = easeOut(clamp(lt / 0.5));
+  ctx.save();
+  ctx.globalAlpha = p * 0.9;
+  ctx.fillStyle = C.oxide;
+  ctx.fillRect(120, 74, 8 + 0, 34);
+  ctx.restore();
+  drawText(text, 150, 72, { size: 26, weight: 800, color: C.oxide, track: 5, alpha: p });
+}
+
+/* ---------- scene types ---------- */
+function scHook( s, lt, dur) {
+  bg(lt, "dark");
+  // concentric clock rings expanding outward
+  const cx = W * .74, cy = H * .5;
+  for (let i = 0; i < 3; i++) {
+    const p = clamp((lt - i * .55) / 3.2);
+    if (p <= 0) continue;
+    ctx.save();
+    ctx.globalAlpha = (1 - p) * .30;
+    ctx.strokeStyle = C.gold; ctx.lineWidth = 2 + i;
+    ctx.beginPath(); ctx.arc(cx, cy, 120 + easeOut(p) * 900, 0, Math.PI * 2); ctx.stroke();
+    ctx.restore();
+  }
+  // clock face
+  ctx.save();
+  ctx.globalAlpha = .92;
+  ctx.translate(cx, cy);
+  const R = 340;
+  ctx.strokeStyle = "rgba(243,236,225,.35)"; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI*2); ctx.stroke();
+  for (let i = 0; i < 60; i++) {
+    const a = i / 60 * Math.PI * 2;
+    const r1 = 330 - (i % 5 === 0 ? 38 : 18), r2 = 330;
+    ctx.globalAlpha = i % 5 === 0 ? .55 : .22;
+    ctx.lineWidth = i % 5 === 0 ? 4 : 2;
+    ctx.beginPath(); ctx.moveTo(Math.sin(a)*r1, -Math.cos(a)*r1);
+    ctx.lineTo(Math.sin(a)*r2, -Math.cos(a)*r2); ctx.stroke();
+  }
+  // hands: sweep to 06:00 over the first second
+  const q = easeInOut(clamp(lt / 1.4));
+  // angle measured clockwise from 12 o'clock; 06:00 -> PI
+  const hourAng = q * (Math.PI + 0.10);      // 6:04 -> hand clearly tilted
+  const minAng  = q * (Math.PI * 2) * (12 / 60); // minute hand, 12 min
+  ctx.globalAlpha = 1; ctx.strokeStyle = C.white; ctx.shadowColor = "rgba(0,0,0,.55)"; ctx.shadowBlur = 18;
+  ctx.lineWidth = 9; ctx.lineCap = "round";
+  ctx.beginPath(); ctx.moveTo(0, 0);
+  ctx.lineTo(Math.sin(hourAng) * 186, -Math.cos(hourAng) * 186); ctx.stroke();
+  ctx.lineWidth = 5; ctx.strokeStyle = C.oxide;
+  ctx.beginPath(); ctx.moveTo(0, 0);
+  ctx.lineTo(Math.sin(minAng) * 96, -Math.cos(minAng) * 96); ctx.stroke();
+  ctx.restore();
+
+  // left block: kicker + big time
+  const p1 = easeOut(clamp(lt / .7));
+  drawText("DIENSTAG · 6. OKTOBER 1949", 170, 210 + (1-p1)*30, { size: 40, weight: 700, color: C.gold, track: 4, alpha: p1 });
+  const p2 = clamp((lt - .15) / .9);
+  revealText("6:00", 160, 270, { size: 380, weight: 800, color: C.white, track: -12, measureW: 1250 }, p2);
+  const p3 = clamp((lt - .8) / .9);
+  drawText("Halle-Neustadt, siebter Stock.", 172, 760, { size: 66, weight: 500, color: "rgba(243,236,225,.86)", maxW: 1150, alpha: p3 });
+  const p4 = clamp((lt - 1.3) / 1.0);
+  drawText("Ein Fahrplan legt fest, wann eine ganze Republik warm isst.", 172, 860,
+           { size: 46, weight: 600, color: C.oxide, maxW: 1080, alpha: p4 });
+  const facts = [["11:30", "Kantine warm"], ["16:45", "Kinder abholen"], ["18:00", "Westen: Abendessen"]];
+  facts.forEach(([k, v], i) => {
+    const pf = clamp((lt - (2.0 + i * 0.35)) / 0.6);
+    if (pf <= 0) return;
+    const y = 1030 + i * 0;
+    const x = 172 + i * 372;
+    ctx.save(); ctx.globalAlpha = pf;
+    ctx.fillStyle = "rgba(243,236,225,.10)";
+    roundRect(x - 20, y - 16, 344, 140, 14); ctx.fill(); ctx.restore();
+    drawText(k, x, y, { size: 62, weight: 800, color: C.white, alpha: pf });
+    drawText(v, x, y + 78, { size: 25, weight: 600, color: "rgba(243,236,225,.62)", maxW: 290, lineH: 1.2, alpha: pf });
+  });
+  const pr = clamp((lt - 2.4) / .8);
+  ctx.save(); ctx.globalAlpha = pr * .5;
+  ctx.strokeStyle = "rgba(243,236,225,.30)"; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(172, 1284); ctx.lineTo(W - 172, 1284); ctx.stroke(); ctx.restore();
+  drawText("WISSEN SIE NOCH", 172, 1240, { size: 26, weight: 800, color: "rgba(243,236,225,.55)", track: 7, alpha: pr });
+  drawText("Deutsche Alltagsgeschichte, die im Kalender steckt", W - 172, 1240,
+           { size: 26, weight: 500, color: "rgba(243,236,225,.45)", align: "right", alpha: pr });
+  drawText("06:00 · Ein Haus, ein Fahrplan", cx, cy + R + 70,
+           { size: 30, weight: 600, color: "rgba(243,236,225,.50)", align: "center", alpha: clamp((lt - 1.8) / .8) });
+  grain(lt, .05);
+  vignette(.5);
+}
+
+function scQuestion(s, lt, dur) {
+  bg(lt, "light");
+  sceneKicker("TEIL 1 · DIE UHRZEIT", lt);
+
+  // ---- left column: headline + three answers ----
+  const p1 = clamp((lt - .2) / 1.0);
+  revealText("Woran erkennt man einen Ostdeutschen?", 170, 210,
+             { size: 92, weight: 800, color: C.ink, lineH: 1.1, measureW: 1240 }, p1);
+  drawText("In der ersten Minute. Nicht in einer Woche.", 176, 430,
+           { size: 36, weight: 500, color: C.grey2, alpha: clamp((lt - .9) / .7) });
+
+  const answers = [
+    ["Dialekt?", "nein.", C.grey2, C.grey],
+    ["Kleidung?", "nein.", C.grey2, C.grey],
+    ["Abendessen.", "ja.", C.oxide, C.oxideDk],
+  ];
+  answers.forEach(function (row, i) {
+    const a = row[0], b = row[1], col = row[2], verdict = row[3];
+    const p = clamp((lt - (1.6 + i * .5)) / .55);
+    if (p <= 0) return;
+    const y = 560 + i * 200;
+    const dx = (1 - easeOut(p)) * -70;
+    ctx.save();
+    ctx.globalAlpha = p * .22;
+    ctx.fillStyle = C.ink;
+    ctx.fillRect(170, y - 40, 1210, 2);
+    ctx.restore();
+    drawText(a, 170 + dx, y, { size: 84, weight: 700, color: col, maxW: 640 });
+    drawText(b, 960, y + 22, { size: 56, weight: 700, color: verdict, align: "right", maxW: 440, alpha: p });
+  });
+
+  // ---- right column: the route through the film ----
+  const pillars = [
+    ["01", "Die Kantine", "11:30 · warm, billig, voll"],
+    ["02", "Die Wohnung", "WBS 70 · rund 1 Mark je m²"],
+    ["03", "Der Laden", "HO, Konsum, Intershop"],
+  ];
+  const rx = 1470, rw = 900;
+  ctx.save();
+  ctx.globalAlpha = clamp((lt - 1.2) / .8) * .5;
+  ctx.fillStyle = C.oxide;
+  ctx.fillRect(rx - 70, 210, 4, 880);
+  ctx.restore();
+  pillars.forEach(function (pl, i) {
+    const n = pl[0], t1 = pl[1], t2 = pl[2];
+    const pp = clamp((lt - (1.8 + i * .45)) / .6);
+    if (pp <= 0) return;
+    const y = 250 + i * 290;
+    ctx.save();
+    ctx.globalAlpha = pp * .07;
+    ctx.fillStyle = C.ink;
+    roundRect(rx, y - 30, rw, 230, 18); ctx.fill();
+    ctx.restore();
+    drawText(n, rx + 34, y, { size: 38, weight: 800, color: C.oxide, alpha: pp });
+    drawText(t1, rx + 34, y + 58, { size: 52, weight: 700, color: C.ink, alpha: pp });
+    drawText(t2, rx + 34, y + 130, { size: 27, weight: 500, color: C.grey2, maxW: rw - 70, alpha: pp });
+  });
+
+  // ---- payoff bar ----
+  const p3 = clamp((lt - 3.6) / .9);
+  if (p3 > 0) {
+    ctx.save(); ctx.globalAlpha = p3;
+    ctx.fillStyle = "rgba(47,111,106,.13)";
+    ctx.fillRect(0, 1270, W, 108);
+    ctx.restore();
+    drawText("Es sind Uhrzeiten. Eine unsichtbare Ordnung, die den Alltag prägte wie Mauer und Betrieb.",
+             170, 1296, { size: 38, weight: 700, color: C.teal, maxW: 2220, alpha: p3 });
+  }
+  grain(lt, .03);
+  vignette(.24);
+}
+function scPhoto(s, lt, dur) {
+  // archival photo with Ken Burns + caption card; photo path comes from the plan
+  bg(lt, "dark");
+  const img = sceneImages[s.id];
+  const box = { x: 150, y: 120, w: W - 300, h: 1010 };
+  if (img && img.complete && img.naturalWidth) {
+    const zoom = lerp(1.02, 1.12, lnorm(lt, dur));
+    const iw = img.naturalWidth, ih = img.naturalHeight;
+    const scale = Math.max(box.w / iw, box.h / ih) * zoom;
+    const dw = iw * scale, dh = ih * scale;
+    const dx = box.x + (box.w - dw) / 2 + Math.sin(lnorm(lt, dur) * Math.PI) * 14;
+    const dy = box.y + (box.h - dh) / 2 - Math.sin(lnorm(lt, dur) * Math.PI) * 10;
+    ctx.save();
+    ctx.beginPath(); ctx.rect(box.x, box.y, box.w, box.h); ctx.clip();
+    // sepia/teal grade so archive photos match the graphic palette
+    ctx.filter = "sepia(0.22) saturate(0.85) contrast(1.06) brightness(0.96)";
+    ctx.drawImage(img, dx, dy, dw, dh);
+    ctx.filter = "none";
+    const g = ctx.createLinearGradient(0, box.y + box.h * .55, 0, box.y + box.h);
+    g.addColorStop(0, "rgba(10,12,14,0)"); g.addColorStop(1, "rgba(10,12,14,.82)");
+    ctx.fillStyle = g; ctx.fillRect(box.x, box.y, box.w, box.h);
+    ctx.restore();
+  } else {
+    ctx.fillStyle = "#24292f"; ctx.fillRect(box.x, box.y, box.w, box.h);
+    drawText("[Archivbild]", box.x + 40, box.y + 40, { size: 48, color: "#7c858f" });
+  }
+  // corner ticks
+  ctx.save(); ctx.strokeStyle = C.gold; ctx.lineWidth = 5; ctx.globalAlpha = .8;
+  const T = 46;
+  [[box.x, box.y, 1, 1], [box.x + box.w, box.y, -1, 1], [box.x, box.y + box.h, 1, -1], [box.x + box.w, box.y + box.h, -1, -1]]
+    .forEach(([x, y, sx, sy]) => { ctx.beginPath(); ctx.moveTo(x, y + sy * T); ctx.lineTo(x, y); ctx.lineTo(x + sx * T, y); ctx.stroke(); });
+  ctx.restore();
+  // caption
+  const p = clamp((lt - .35) / .7);
+  if (s.caption) drawText(s.caption, box.x + 60, box.y + box.h - 190, { size: 62, weight: 700, color: C.white, maxW: box.w - 200, alpha: p });
+  if (s.sub) drawText(s.sub, box.x + 62, box.y + box.h - 110, { size: 34, weight: 500, color: "rgba(243,236,225,.75)", maxW: box.w - 200, alpha: p });
+  grain(lt, .04);
+  vignette(.32);
+}
+
+/* timeline / gantt of the working day */
+function scDayChart(s, lt, dur) {
+  bg(lt, "light");
+  const LABEL_R = 470, x0 = 520, x1 = W - 240, y0 = 470, rowH = 108;
+  sceneKicker("DAS DIAGRAMM", lt);
+  drawText("Ein Tag im Takt des Betriebs", 200, 150, { size: 82, weight: 800, color: C.ink });
+  drawText("Stunden 4 bis 22 Uhr", 204, 258, { size: 34, weight: 600, color: C.grey });
+
+  const h2x = h => x0 + (h - 4) / 18 * (x1 - x0);
+  // hour grid
+  for (let h = 4; h <= 22; h++) {
+    const x = h2x(h);
+    ctx.save(); ctx.strokeStyle = h % 2 === 0 ? "rgba(20,23,27,.16)" : "rgba(20,23,27,.07)";
+    ctx.lineWidth = h % 2 === 0 ? 2 : 1;
+    ctx.beginPath(); ctx.moveTo(x, y0 - 40); ctx.lineTo(x, y0 + rowH * 4 + 30); ctx.stroke(); ctx.restore();
+    if (h % 2 === 0) drawText(String(h).padStart(2, "0"), x, y0 + rowH * 4 + 44,
+      { size: 30, weight: 600, color: C.grey, align: "center" });
+  }
+  const rows = [
+    { label: "Frühschicht", from: 6, to: 14.5, color: C.oxide, note: "ab 6:00" },
+    { label: "Kantine", from: 11.5, to: 12.3, color: C.gold, note: "11:30 warm" },
+    { label: "Kindergarten", from: 6.5, to: 16.75, color: C.teal, note: "bis 16:45" },
+    { label: "Feierabend", from: 17, to: 22, color: "#6b6257", note: "nach Hause" },
+  ];
+  rows.forEach((r, i) => {
+    const y = y0 + i * rowH;
+    drawText(r.label, LABEL_R, y + 14, { size: 36, weight: 700, color: C.ink2, align: "right", maxW: 420 });
+    const p = clamp((lt - .5 - i * .45) / 1.5);
+    if (p <= 0) return;
+    const xe = h2x(lerp(r.from, r.to, easeInOut(p)));
+    ctx.save();
+    ctx.globalAlpha = .95;
+    ctx.fillStyle = r.color;
+    roundRect(h2x(r.from), y, Math.max(6, xe - h2x(r.from)), 74, 14); ctx.fill();
+    ctx.restore();
+    if (p > .85) {
+      ctx.save(); ctx.globalAlpha = clamp((p - .85) / .15);
+      const noteX = Math.min(xe + 22, x1 - 250);
+      drawText(r.note, noteX, y + 22, { size: 30, weight: 700, color: C.grey2, maxW: 240 });
+      ctx.restore();
+    }
+  });
+  // the "11:30" marker that the narration is built around
+  const pm = clamp((lt - 3.0) / .8);
+  if (pm > 0) {
+    const x = h2x(11.5);
+    ctx.save(); ctx.globalAlpha = pm;
+    ctx.strokeStyle = C.oxideDk; ctx.lineWidth = 4; ctx.setLineDash([12, 10]);
+    ctx.beginPath(); ctx.moveTo(x, y0 - 90); ctx.lineTo(x, y0 + rowH * 4 + 18); ctx.stroke();
+    ctx.restore();
+    ctx.save(); ctx.globalAlpha = pm; ctx.fillStyle = C.oxideDk;
+    roundRect(x - 96, y0 - 158, 192, 66, 12); ctx.fill(); ctx.restore();
+    drawText("11:30", x, y0 - 146, { size: 40, weight: 800, color: C.white, align: "center", alpha: pm });
+  }
+  const pleg = clamp((lt - 3.6) / .7);
+  [["Frühschicht", C.oxide], ["Kantine", C.gold], ["Kinderbetreuung", C.teal], ["Feierabend", "#6b6257"]]
+    .forEach(([name, col], i) => {
+      const lx = 520 + i * 440;
+      ctx.save(); ctx.globalAlpha = pleg; ctx.fillStyle = col;
+      roundRect(lx, 1120, 40, 26, 6); ctx.fill(); ctx.restore();
+      drawText(name, lx + 56, 1116, { size: 28, weight: 600, color: C.grey2, alpha: pleg });
+    });
+  const pnote = clamp((lt - 4.2) / .9);
+  drawText("Wenn die Kantine um elf schließt, kocht man mittags.", 200, 1216,
+           { size: 52, weight: 700, color: C.teal, alpha: pnote });
+  grain(lt, .03);
+  vignette(.22);
+}
+
+/* animated bar comparison, e.g. rent or waiting time */
+function scBars(s, lt, dur) {
+  bg(lt, "dark");
+  const x0 = 470, maxW = 1330, y0 = 520, bh = 96, gap = 150;
+  sceneKicker(s.kicker || "DIE ZAHL", lt);
+  drawText(s.title || "Vergleich", 240, 170, { size: 78, weight: 800, color: C.white, maxW: 1900 });
+  drawText(s.note || "", 244, 282, { size: 34, weight: 500, color: "rgba(243,236,225,.62)", maxW: 1900 });
+  (s.bars || []).forEach((b, i) => {
+    const y = y0 + i * gap;
+    const p = clamp((lt - (.6 + i * .6)) / 1.4);
+    drawText(b.label, x0 - 36, y + 24, { size: 34, weight: 700, color: "rgba(243,236,225,.78)", align: "right", maxW: 330 });
+    ctx.save();
+    ctx.fillStyle = "rgba(255,255,255,.06)";
+    roundRect(x0, y + 8, maxW, bh - 16, 10); ctx.fill();
+    ctx.restore();
+    if (p > 0) {
+      const w = maxW * (b.value / s.max) * easeOut(p);
+      ctx.save(); ctx.fillStyle = b.color || C.oxide;
+      roundRect(x0, y + 8, Math.max(8, w), bh - 16, 10); ctx.fill(); ctx.restore();
+      drawText(b.display, x0 + w + 28, y + 20, { size: 48, weight: 800, color: C.white, alpha: clamp(p * 1.6 - .3) });
+    }
+  });
+  const pfoot = clamp((lt - 3.6) / .9);
+  drawText(s.foot || "", 280, 1180, { size: 42, weight: 600, color: C.gold, maxW: 2000, alpha: pfoot });
+  grain(lt, .045); vignette(.4);
+}
+
+/* two-column before/after comparison with icons */
+function scCompare(s, lt, dur) {
+  bg(lt, "light");
+  sceneKicker(s.kicker || "DER VERGLEICH", lt);
+  drawText(s.title || "Altbau vs. Neubau", 200, 150, { size: 76, weight: 800, color: C.ink, maxW: 2100 });
+
+  // ---- zone 1 + 2: the two columns ----
+  const cols = s.columns || [];
+  const colX = [200, 900];
+  window.__colRightEdge = 1500;
+  cols.forEach(function (col, ci) {
+    const cx = colX[ci];
+    const p0 = clamp((lt - ci * .35) / .7);
+    ctx.save(); ctx.globalAlpha = p0 * (ci === 1 ? .10 : .06);
+    ctx.fillStyle = ci === 0 ? C.grey2 : C.teal;
+    roundRect(cx - 30, 300, 560, 790, 18); ctx.fill(); ctx.restore();
+    drawText(col.head, cx, 330, { size: 50, weight: 800, color: ci === 0 ? C.grey2 : C.teal, alpha: p0, maxW: 520 });
+    drawText(col.year || "", cx, 400, { size: 28, weight: 600, color: C.grey, alpha: p0 });
+    (col.items || []).forEach(function (item, i) {
+      const p = clamp((lt - (1.0 + ci * .35 + i * .42)) / .55);
+      if (p <= 0) return;
+      const y = 500 + i * 140;
+      ctx.save(); ctx.globalAlpha = p;
+      ctx.beginPath(); ctx.arc(cx + 16 + (1 - easeOut(p)) * -18, y + 28, 13, 0, Math.PI * 2);
+      ctx.fillStyle = ci === 0 ? C.grey : C.teal; ctx.fill(); ctx.restore();
+      drawText(item, cx + 50, y + 4, { size: 38, weight: 600, color: C.ink2, maxW: 470, lineH: 1.2, alpha: p });
+    });
+  });
+
+  // ---- zone 3: section drawing of the building type ----
+  const pb = clamp((lt - 3.0) / 1.0);
+  if (pb > 0) {
+    const bx = 1650, by = 360, bw2 = 740, bh2 = 640;
+    ctx.save();
+    ctx.globalAlpha = pb;
+    ctx.fillStyle = "rgba(20,23,27,.045)";
+    roundRect(bx - 40, by - 110, bw2 + 80, bh2 + 250, 18); ctx.fill();
+    ctx.restore();
+    drawText("Schnitt · Wohnungsbauserie 70", bx - 10, by - 80,
+             { size: 26, weight: 700, color: C.grey, track: 2, alpha: pb });
+    ctx.save();
+    ctx.globalAlpha = pb * .9;
+    ctx.strokeStyle = "rgba(20,23,27,.60)"; ctx.lineWidth = 4;
+    ctx.strokeRect(bx, by, bw2, bh2);
+    const floors = 5, bays = 4;
+    for (let f = 0; f < floors; f++) {
+      const fy = by + (f * bh2) / floors;
+      ctx.beginPath(); ctx.moveTo(bx, fy); ctx.lineTo(bx + bw2, fy); ctx.stroke();
+      for (let c2 = 0; c2 < bays; c2++) {
+        const fw = bw2 / bays, fx = bx + c2 * fw;
+        const balcony = (c2 === 1 || c2 === 2);
+        ctx.fillStyle = balcony ? "rgba(200,71,47,.20)" : "rgba(47,111,106,.16)";
+        ctx.fillRect(fx + 14, fy + 26, fw - 28, bh2 / floors - 48);
+      }
+    }
+    ctx.setLineDash([12, 9]); ctx.strokeStyle = C.teal; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(bx + bw2 / 2, by - 26); ctx.lineTo(bx + bw2 / 2, by + bh2 + 26); ctx.stroke();
+    ctx.restore();
+    drawText("Wohnungstrennwand", bx + bw2 / 2, by + bh2 + 44,
+             { size: 24, weight: 600, color: C.teal, align: "center", alpha: pb });
+    drawText("5 Etagen · 8 Wohnungen je Etage", bx - 10, by + bh2 + 92,
+             { size: 25, weight: 600, color: C.grey2, maxW: bw2 + 20, alpha: pb });
+  }
+
+  const pn = clamp((lt - 4.6) / .9);
+  drawText(s.foot || "", 200, 1240, { size: 44, weight: 700, color: C.oxideDk, maxW: 2000, alpha: pn });
+  grain(lt, .03);
+  vignette(.24);
+}
+/* causal chain: box -> arrow -> box */
+function scChain(s, lt, dur) {
+  bg(lt, "light");
+  sceneKicker(s.kicker || "DIE KETTE", lt);
+  drawText(s.title || "Wie eine Rechnung Geschichte macht", 160, 150, { size: 72, weight: 800, color: C.ink, maxW: 2200 });
+  const steps = s.steps || [];
+  const n = steps.length;
+  const gapX = 44;
+  const bw = (W - 320 - gapX * (n - 1)) / n;
+  steps.forEach((st, i) => {
+    const p = clamp((lt - (.5 + i * .9)) / .8);
+    if (p <= 0) return;
+    const x = 160 + i * (bw + gapX);
+    const y = 430;
+    ctx.save(); ctx.globalAlpha = p;
+    ctx.translate(0, (1 - easeOut(p)) * 40);
+    ctx.fillStyle = st.dark ? C.ink : "#fffdf8";
+    ctx.strokeStyle = st.dark ? "rgba(0,0,0,.2)" : "rgba(20,23,27,.14)";
+    ctx.lineWidth = 3;
+    roundRect(x, y, bw, 500, 24); ctx.fill(); ctx.stroke();
+    const col = st.dark ? C.white : C.ink;
+    drawText(st.kicker || "", x + 34, y + 36, { size: 28, weight: 800, color: st.accent || C.oxide, track: 3, maxW: bw - 60 });
+    drawText(st.title, x + 34, y + 96, { size: 54, weight: 800, color: col, maxW: bw - 60, lineH: 1.08 });
+    drawText(st.body || "", x + 34, y + 320, { size: 32, weight: 500, color: st.dark ? "rgba(251,248,242,.75)" : C.grey2, maxW: bw - 68, lineH: 1.28 });
+    ctx.restore();
+    if (i < n - 1) {
+      const ap = clamp((lt - (.85 + i * .9)) / .5);
+      if (ap > 0) {
+        const ax = x + bw + 8, ay = y + 250;
+        ctx.save(); ctx.globalAlpha = ap; ctx.strokeStyle = C.oxide; ctx.lineWidth = 7; ctx.lineCap = "round";
+        const len = (gapX - 16) * easeOut(ap);
+        ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(ax + len, ay); ctx.stroke();
+        if (ap > .7) { ctx.beginPath(); ctx.moveTo(ax + len, ay - 14); ctx.lineTo(ax + len + 22, ay); ctx.lineTo(ax + len, ay + 14); ctx.fillStyle = C.oxide; ctx.fill(); }
+        ctx.restore();
+      }
+    }
+  });
+  const pf = clamp((lt - (1.4 + n * .9)) / .9);
+  drawText(s.foot || "", 160, 1030, { size: 48, weight: 700, color: C.oxideDk, maxW: 2200, alpha: pf });
+  grain(lt, .03); vignette(.22);
+}
+
+/* vertical timeline of dates */
+function scTimeline(s, lt, dur) {
+  bg(lt, "dark");
+  sceneKicker(s.kicker || "DIE ZEITLEISTE", lt);
+  drawText(s.title || "Vierzig Jahre Alltag", 200, 130, { size: 76, weight: 800, color: C.white, maxW: 2200 });
+  const y = 640, x0 = 240, x1 = W - 240;
+  const p0 = clamp((lt - .3) / 1.4);
+  ctx.save(); ctx.strokeStyle = "rgba(243,236,225,.25)"; ctx.lineWidth = 6; ctx.lineCap = "round";
+  ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(lerp(x0, x1, easeInOut(p0)), y); ctx.stroke(); ctx.restore();
+  (s.events || []).forEach((ev, i) => {
+    const p = clamp((lt - (.8 + i * .8)) / .7);
+    if (p <= 0) return;
+    const x = x0 + ev.pos * (x1 - x0);
+    ctx.save(); ctx.globalAlpha = p;
+    ctx.fillStyle = ev.color || C.gold;
+    ctx.beginPath(); ctx.arc(x, y, 20 + (1 - easeOut(p)) * 14, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+    const up = i % 2 === 0;
+    const stem = up ? -1 : 1;
+    ctx.save(); ctx.globalAlpha = p * .5; ctx.strokeStyle = C.white; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(x, y + stem * 26); ctx.lineTo(x, y + stem * 88); ctx.stroke(); ctx.restore();
+    drawText(ev.year, x, y + stem * 104, { size: 50, weight: 800, color: C.white, align: "center", alpha: p });
+    drawText(ev.label, x, y + stem * 182, { size: 30, weight: 500, color: "rgba(243,236,225,.66)", align: "center", maxW: 420, lineH: 1.25, alpha: p });
+  });
+  drawText(s.foot || "", 200, 1130, { size: 56, weight: 700, color: C.gold, maxW: 2200, alpha: clamp((lt - 3.4) / .9) });
+  grain(lt, .045); vignette(.42);
+}
+
+/* big pull-quote / payoff card */
+function scQuote(s, lt, dur) {
+  bg(lt, "dark");
+  const p0 = easeOut(clamp(lt / .8));
+  ctx.save(); ctx.globalAlpha = p0 * .9;
+  ctx.fillStyle = C.oxide; ctx.fillRect(150, 210, 12, 830); ctx.restore();
+  drawText("„", 190, 150, { size: 260, weight: 800, color: "rgba(217,164,65,.28)", alpha: p0 });
+  const p1 = clamp((lt - .25) / 1.3);
+  revealText(s.quote, 300, 420, { size: 104, weight: 800, color: C.white, lineH: 1.16, measureW: 1780 }, p1);
+  drawText(s.by || "", 304, 1030, { size: 40, weight: 600, color: C.gold, alpha: clamp((lt - 2.0) / .8) });
+  grain(lt, .045); vignette(.45);
+}
+
+/* end card with CTA */
+function scEnd(s, lt, dur) {
+  bg(lt, "light");
+  const p0 = easeOut(clamp(lt / .7));
+  drawText("WISSEN SIE NOCH", 200, 150, { size: 34, weight: 800, color: C.oxide, track: 8, alpha: p0 });
+  const head = s.headline || "Essen Sie mittags oder abends warm?";
+  const words = head.split(" ");
+  const mid = Math.ceil(words.length / 2);
+  const l1 = words.slice(0, mid).join(" "), l2 = words.slice(mid).join(" ");
+  revealText(l1, 190, 330, { size: 112, weight: 800, color: C.ink, lineH: 1.1, measureW: 2000 }, clamp((lt - .3) / .9));
+  revealText(l2, 190, 470, { size: 112, weight: 800, color: C.ink, lineH: 1.1, measureW: 2000 }, clamp((lt - .8) / .9));
+  const p1 = 1;
+  drawText("Abonnieren kostet nichts – und Teil 2 kommt nächste Woche.", 194, 680,
+           { size: 44, weight: 600, color: C.grey2, maxW: 1800, alpha: clamp((lt - 1.5) / .8) });
+  const p2 = clamp((lt - 1.6) / .8);
+  ctx.save(); ctx.globalAlpha = p2;
+  ctx.fillStyle = C.ink; roundRect(190, 860, 980, 130, 26); ctx.fill(); ctx.restore();
+  drawText("KOMMENTAR SCHREIBEN", 240, 896, { size: 46, weight: 800, color: C.white, alpha: p2 });
+  ctx.save(); ctx.globalAlpha = p2;
+  ctx.strokeStyle = C.oxide; ctx.lineWidth = 6; roundRect(1210, 860, 950, 130, 26); ctx.stroke(); ctx.restore();
+  drawText("Teil 2: Der Betrieb", 1250, 896, { size: 46, weight: 800, color: C.oxideDk, alpha: p2 });
+  drawText("Quellen: Wikipedia (Plattenbau, WBS 70, Intershop, HO, Trabant, POS, 17. Juni 1953) · Bilder: Bundesarchiv, CC BY-SA 3.0 de",
+           190, 1240, { size: 28, weight: 500, color: C.grey, maxW: 2150, alpha: clamp((lt - 2.2) / .8) });
+  grain(lt, .03); vignette(.22);
+}
+
+/* big numbers that count up: numbers land emotionally, text alone does not */
+function scTicker(s, lt, dur) {
+  bg(lt, "dark");
+  sceneKicker(s.kicker || "DIE ZAHLEN", lt);
+  drawText(s.title || "Der Osten in Zahlen", 200, 150, { size: 74, weight: 800, color: C.white, maxW: 2100 });
+  const items = s.items || [];
+  items.forEach(function (it, i) {
+    const p0 = clamp((lt - (0.4 + i * 0.85)) / 0.6);
+    if (p0 <= 0) return;
+    const y = 330 + i * 250;
+    const grow = easeOut(clamp((lt - (0.6 + i * 0.85)) / 1.2));
+    const val = it.value * grow;
+    const shown = it.decimals ? val.toFixed(it.decimals).replace(".", ",") : Math.round(val).toLocaleString("de-DE");
+    ctx.save(); ctx.globalAlpha = p0 * .06;
+    ctx.fillStyle = C.white;
+    roundRect(190, y - 44, W - 380, 214, 20); ctx.fill(); ctx.restore();
+    drawText(shown, 230, y - 14, { size: 116, weight: 800, color: it.color || C.gold, alpha: p0 });
+    ctx.font = `800 116px ${FONT}`;
+    const unitX = 236 + ctx.measureText(shown).width;
+    drawText(it.unit || "", unitX, y + 52, { size: 40, weight: 700, color: "rgba(243,236,225,.55)", alpha: p0, maxW: W - unitX - 300 });
+    drawText(it.label, 230, y + 118, { size: 34, weight: 500, color: "rgba(243,236,225,.80)", maxW: W - 600, alpha: p0 });
+  });
+  const pf = clamp((lt - (1.2 + items.length * .85)) / .8);
+  // closing rail: the takeaway, plus a rule so the frame is not bottom-heavy
+  const railP = clamp((lt - (0.8 + items.length * .85)) / .9);
+  if (railP > 0) {
+    ctx.save(); ctx.globalAlpha = railP * .35; ctx.fillStyle = C.gold;
+    ctx.fillRect(200, 1150, W - 400, 2); ctx.restore();
+    drawText(s.foot || "", 200, 1186, { size: 38, weight: 700, color: C.gold, maxW: 2100, alpha: railP });
+  }
+  grain(lt, .045); vignette(.42);
+}
+
+/* schematic map: outlines only, so it reads as a diagram, not a claim */
+function scMap(s, lt, dur) {
+  bg(lt, "light");
+  sceneKicker(s.kicker || "DIE KARTE", lt);
+  drawText(s.title || "Wo der Alltag stattfand", 200, 150, { size: 74, weight: 800, color: C.ink, maxW: 2100 });
+  // stylised north-east block: not a survey map, deliberately a diagram
+  const cx = 1000, cy = 700;
+  const p0 = easeOut(clamp(lt / 1.0));
+  ctx.save();
+  ctx.globalAlpha = p0 * .9;
+  ctx.translate(cx, cy);
+  ctx.scale(1.6, 1.6);
+  ctx.beginPath();
+  const shape = [[-150,-120],[ -40,-150],[60,-120],[130,-40],[110,60],[40,130],[-60,140],[-140,70],[-170,-20]];
+  ctx.moveTo(shape[0][0], shape[0][1]);
+  shape.slice(1).forEach(function (pt) { ctx.lineTo(pt[0], pt[1]); });
+  ctx.closePath();
+  ctx.fillStyle = "rgba(200,71,47,.07)";
+  ctx.fill();
+  ctx.strokeStyle = "rgba(20,23,27,.55)"; ctx.lineWidth = 3; ctx.stroke();
+  ctx.restore();
+  (s.points || []).forEach(function (pt, i) {
+    const pp = clamp((lt - (1.0 + i * .45)) / .6);
+    if (pp <= 0) return;
+    const px = cx + pt.x * 1.6, py = cy + pt.y * 1.6;
+    ctx.save(); ctx.globalAlpha = pp;
+    ctx.fillStyle = C.oxide;
+    ctx.beginPath(); ctx.arc(px, py, 11, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = C.oxide; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(px, py, 11 + (1 - pp) * 26, 0, Math.PI * 2); ctx.stroke();
+    ctx.restore();
+    drawText(pt.label, px + 26, py - 12, { size: 32, weight: 700, color: C.ink, alpha: pp });
+    if (pt.note) drawText(pt.note, px + 26, py + 30, { size: 24, weight: 500, color: C.grey2, alpha: pp });
+  });
+  drawText(s.foot || "", 200, 1268, { size: 36, weight: 700, color: C.teal, maxW: 2200, alpha: clamp((lt - 3) / .8) });
+  grain(lt, .03); vignette(.24);
+}
+const DRAW = { hook: scHook, question: scQuestion, photo: scPhoto, daychart: scDayChart,
+               bars: scBars, compare: scCompare, chain: scChain, timeline: scTimeline,
+               ticker: scTicker, map: scMap,
+               quote: scQuote, end: scEnd };
+
+/* ---------- canvas helpers ---------- */
+function roundRect(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+const lnorm = (lt, dur) => clamp(dur > 0 ? lt / dur : 0);
+
+/* ---------- image loading ---------- */
+const sceneImages = {};
+function loadSceneImage(key, url) {
+  return new Promise((res) => {
+    const img = new Image();
+    img.onload = () => { sceneImages[key] = img; res(true); };
+    img.onerror = () => { res(false); };
+    img.src = url;
+  });
+}
+
+/* ---------- persistent overlays: progress + act marker ---------- */
+function overlays(lt, scene, dur, total) {
+  if (!total || total <= 0) return;
+  const abs = scene.start + lt;
+  const frac = Math.max(0, Math.min(1, abs / total));
+
+  // bottom progress rail: 3px, always visible, grows with real playback time
+  ctx.save();
+  ctx.globalAlpha = 0.9;
+  ctx.fillStyle = "rgba(0,0,0,0.16)";
+  ctx.fillRect(0, H - 6, W, 6);
+  const g = ctx.createLinearGradient(0, 0, W, 0);
+  g.addColorStop(0, C.oxide);
+  g.addColorStop(1, C.gold);
+  ctx.fillStyle = g;
+  ctx.fillRect(0, H - 6, W * frac, 6);
+  // playhead tick
+  ctx.fillStyle = C.white;
+  ctx.fillRect(W * frac - 2, H - 12, 4, 12);
+  ctx.restore();
+
+  // top-right act counter: "3 / 15" - signals structure, costs nothing
+  if (scene.index && scene.count) {
+    ctx.save();
+    ctx.globalAlpha = 0.55;
+    drawText(String(scene.index).padStart(2, "0") + " / " + String(scene.count).padStart(2, "0"),
+             W - 120, 74, { size: 24, weight: 700, color: C.grey2, align: "right", track: 2 });
+    ctx.restore();
+  }
+
+  // last 2.5 s of an act: a thin sweep hints the next beat is coming
+  const tail = dur - lt;
+  if (tail < 2.5 && tail > 0) {
+    const p2 = 1 - tail / 2.5;
+    ctx.save();
+    ctx.globalAlpha = 0.18 * (1 - p2);
+    ctx.fillStyle = C.ink;
+    ctx.fillRect(0, 0, W, H);
+    ctx.restore();
+  }
+}
+
+/* ---------- public API ---------- */
+window.setPlan = (p) => { plan = p; };
+window.renderFrame = (t) => {
+  if (!plan) return "no plan";
+  let s = plan.scenes[0];
+  for (const sc of plan.scenes) if (t >= sc.start && t < sc.end) { s = sc; break; }
+  if (!s.index) {
+    s.index = plan.scenes.indexOf(s) + 1;
+    s.count = plan.scenes.length;
+  }
+  const lt = t - s.start, dur = s.end - s.start;
+  (DRAW[s.type] || scHook)(s, lt, dur);
+  overlays(lt, s, dur, plan.duration);
+  return s.id;
+};
+window.loadImage = async (key, url) => loadSceneImage(key, url);
+window.warmFonts = async () => {
+  const variants = ["700 120px", "800 120px", "600 44px", "500 34px", "800 40px"];
+  for (const v of variants) await document.fonts.load(`${v} InterFill`);
+  await document.fonts.ready;
+  return document.fonts.check("700 120px InterFill");
+};
+</script>
+</body>
+</html>

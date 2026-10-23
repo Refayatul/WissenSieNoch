@@ -1,0 +1,152 @@
+{
+  "id": "video2",
+  "title": "Um 11:30 aß eine ganze Republik zu Mittag",
+  "fps": 30,
+  "width": 2560,
+  "height": 1440,
+  "voice": "Charon",
+  "tts_model": "gemini-3.8-flash-lite-tts",
+  "font_fallback": "DejaVu Sans",
+  "scenes": [
+    {
+      "id": 1,
+      "type": "hook",
+      "words": "Am sechsten Oktober, neunzehnhundertneunundvierzig, einem Donnerstagmorgen, wird es in Halle-Neustadt hell. Ein Plattenbau, siebter Stock. Der Wecker klingelt, und fast alle in diesem Haus stehen gleichzeitig auf. Warum?",
+      "note": "Hook 1: Ort, Zeit, offene Frage"
+    },
+    {
+      "id": 2,
+      "type": "question",
+      "words": "Woran erkennt man einen Ostdeutschen in der ersten Minute? Nicht am Dialekt, nicht an der Kleidung. Am Abendessen.",
+      "note": "Hook 2: Musterbruch"
+    },
+    {
+      "id": 3,
+      "type": "quote",
+      "quote": "Wer in der DDR aufgewachsen ist, isst bis heute warm, wenn andere Kaffee trinken.",
+      "by": "Es sind Uhrzeiten – keine Nostalgie",
+      "words": "Wer in der DDR aufgewachsen ist, isst bis heute warm, wenn andere Kaffee trinken. Das ist keine Nostalgie. Es sind Uhrzeiten. Eine unsichtbare Ordnung, die den Alltag genauso prägte wie Mauer und Betrieb."
+    },
+    {
+      "id": 4,
+      "type": "photo",
+      "caption": "Betriebskantine",
+      "sub": "Die Hauptmahlzeit für Werktätige",
+      "image": "kantine",
+      "words": "Fangen wir mit der Küche an. Die Hauptmahlzeit war für viele Werktätige das Mittagessen in der Betriebskantine. Die Frühschicht begann in vielen Betrieben um sechs Uhr, die Kantine öffnete um elf Uhr dreißig. Wer bis fünfzehn Uhr arbeiten musste, hatte seine warme Mahlzeit hinter sich, bevor die Kinder aus der Schule kamen."
+    },
+    {
+      "id": 5,
+      "type": "daychart",
+      "words": "Stellen Sie sich das als Tagesdiagramm vor. Frühschicht, Kantine, Nachmittag, Feierabend. Wenn Ihre Kantine um elf schließt und der Kindergarten um fünf, dann kochen Sie mittags. Nicht weil Sie wollen. Weil der Plan es verlangt."
+    },
+    {
+      "id": 6,
+      "type": "photo",
+      "caption": "Plattenbau, Neubaugebiet",
+      "sub": "Wohnung als Zuteilung, nicht als Markt",
+      "image": "platte",
+      "words": "Da ist der zweite Anker: die Wohnung. Der Wohnungsbau war kein Markt, sondern eine Zuteilung. Die Miete in Neubauten lag bei etwa einer Mark pro Quadratmeter im Monat und blieb über Jahrzehnte gleich."
+    },
+    {
+      "id": 7,
+      "type": "bars",
+      "title": "Etwa 1 Mark je Quadratmeter",
+      "kicker": "DIE MIETE",
+      "note": "Neubaumiete im Osten – bebaut nach der Wohnungsbauserie 70",
+      "max": 10,
+      "bars": [
+        { "label": "DDR-Neubau", "value": 1, "display": "≈ 1 M / m²", "color": "#c8472f" },
+        { "label": "Staat-Zuschuss", "value": 8, "display": "Rest trägt der Staat", "color": "#2f6f6a" }
+      ],
+      "foot": "Ein Preis, der nie den Markt sah – deshalb blieb er so lange gleich.",
+      "words": "Nach neunzehnhunderteinundsiebzig wurde die Wohnungsfrage zum Kernstück der Sozialpolitik; das staatliche Wohnungsbauprogramm von neunzehnhundertzweiundsiebzig sollte den Wohnraummangel bis neunzehnhundertneunzig beseitigen. Man baute schnell, und man baute in Beton, nach einem Muster: die Wohnungsbauserie siebzig."
+    },
+    {
+      "id": 8,
+      "type": "compare",
+      "title": "Altbau vs. Neubau",
+      "kicker": "DER KOMFORTSPRUNG",
+      "columns": [
+        { "head": "Altbau", "year": "vor 1945", "items": ["Ofen heizen", "Kohlen tragen", "Wasser am Waschbecken", "Toilette auf halber Treppe"] },
+        { "head": "Neubau WBS 70", "year": "ab 1973", "items": ["Fernwärme", "Bad mit Wanne", "Fließend Warmwasser", "Innen-WC"] }
+      ],
+      "foot": "Für viele Familien der größte Komfortsprung ihres Lebens.",
+      "words": "Sie wurde um neunzehnhundertsiebzig entwickelt, ab neunzehnhundertzweiundsiebzig verbindlich beschlossen und ab neunzehnhundertdreiundsiebzig millionenfach errichtet. Diese Wohnung war nicht nur eine Wohnung. Sie war ein Interface. Warmwasser, Zentralheizung, Bad, Innen-WC. Klingt selbstverständlich?"
+    },
+    {
+      "id": 9,
+      "type": "bars",
+      "title": "Wartezeit in Jahren",
+      "kicker": "DIE WARTELISTE",
+      "note": "Wer einen Trabant bestellte, wartete. Und wartete.",
+      "max": 15,
+      "bars": [
+        { "label": "Telefon", "value": 8, "display": "viele Jahre", "color": "#2f6f6a" },
+        { "label": "Trabant 601", "value": 15, "display": "10 – 15 Jahre", "color": "#c8472f" }
+      ],
+      "foot": "Ein gebrauchter Trabant kostete oft mehr als ein neuer.",
+      "words": "In vielen Altbauten hieß das noch: Ofen heizen, Kohlen tragen, Wasser schleppen. Der Umzug in den Neubau war für viele Familien der größte Komfortsprung ihres Lebens. Deshalb ist der Plattenbau bis heute für viele ein Sehnsuchtsort. Für andere ein Albtraum. Beides ist ehrlich."
+    },
+    {
+      "id": 10,
+      "type": "quote",
+      "quote": "Hauptbahnhof, Gleis drei, siebzehn Uhr. Kein Handy, kein Ersatzplan.",
+      "by": "Wer sich verzählte, stand allein",
+      "words": "Und dann gab es noch einen kargen Luxus: das Telefon. Private Anschlüsse waren knapp, und die Wartezeit über die Post der DDR konnte viele Jahre dauern. Die Folgen waren spürbar. Verabredungen waren Verabredungen."
+    },
+    {
+      "id": 11,
+      "type": "chain",
+      "title": "Wie eine Rechnung Geschichte macht",
+      "kicker": "DER 17. JUNI",
+      "steps": [
+        { "kicker": "URSACHE", "title": "+10 % Arbeitsnorm", "body": "Mehr Arbeit für gleichen Lohn im Baugewerbe", "accent": "#c8472f" },
+        { "kicker": "REAKTION", "title": "Streik der Bauarbeiter", "body": "Aus einer Forderung wird ein Aufstand", "accent": "#d9a441", "dark": true },
+        { "kicker": "FOLGE", "title": "17. Juni 1953", "body": "Eine Erhebung im ganzen Land", "accent": "#c8472f" }
+      ],
+      "foot": "Das Signal, das ein Land bewegte, war eine Rechnung.",
+      "words": "Nun zur Frage, die viele umtreibt. Der siebzehnte Juni neunzehnhundertdreiundfünfzig begann nicht mit einer Rede, sondern mit einer Rechnung. Die SED hatte die Arbeitsnormen im Baugewerbe um zehn Prozent erhöht, also mehr Arbeit für gleichen Lohn."
+    },
+    {
+      "id": 12,
+      "type": "compare",
+      "title": "Drei Läden, drei Welten",
+      "kicker": "DER ALLTAG IM REGAL",
+      "columns": [
+        { "head": "HO", "year": "ab 1948 · staatlich", "items": ["Staatliches Handelsunternehmen", "Grundversorgung", "Feste Preise, feste Regale"] },
+        { "head": "Konsum & Intershop", "year": "Genossenschaft · Westgeld", "items": ["Konsum: genossenschaftlich", "Intershop: Westgeld, Forumschecks", "1974 über 100 Filialen"] }
+      ],
+      "foot": "Zwei Welten im selben Land – und ein Schaufenster ins Ausland.",
+      "words": "Aus dem Streik von Bauarbeitern wurde in wenigen Tagen eine Erhebung im ganzen Land. Bis heute ist das der Moment, an dem man sieht, wie eng Alltag und Politik ineinander stecken."
+    },
+    {
+      "id": 13,
+      "type": "timeline",
+      "title": "Vierzig Jahre Alltag",
+      "kicker": "DER RAHMEN",
+      "events": [
+        { "year": "1949", "pos": 0.03, "label": "DDR gegründet", "color": "#c8472f" },
+        { "year": "1953", "pos": 0.2, "label": "17. Juni" },
+        { "year": "1972", "pos": 0.45, "label": "Wohnungsbauprogramm" },
+        { "year": "1974", "pos": 0.62, "label": "Intershop-Netz" },
+        { "year": "1989", "pos": 0.97, "label": "Mauerfall", "color": "#d9a441" }
+      ],
+      "foot": "Dazwischen liegen vierzig Jahre Alltag. Das ist die eigentliche Sensation.",
+      "words": "Am siebten Oktober neunzehnhundertneunundvierzig wurde die DDR gegründet. Am neunten November neunzehnhundertneunundachtzig fiel die Mauer. Dazwischen liegen vierzig Jahre Alltag. Und das ist die eigentliche Sensation: nicht der Ausnahmezustand, sondern der Alltag."
+    },
+    {
+      "id": 14,
+      "type": "quote",
+      "quote": "Wo die Uhr wohnt, da wohnt die Politik.",
+      "by": "Der Befund",
+      "words": "Ein letzter Satz zum Mitnehmen. Wenn Sie diesen Alltag verstehen wollen, schreiben Sie keinen Protest an die Wand. Schreiben Sie einen Tagesplan auf."
+    },
+    {
+      "id": 15,
+      "type": "end",
+      "headline": "Essen Sie mittags oder abends warm?",
+      "words": "Und eine ganze Republik hat nicht um achtzehn Uhr, sondern um elf Uhr dreißig zu Mittag gegessen. Schreiben Sie in die Kommentare: Essen Sie mittags oder abends warm? Und wenn Sie weiter mitgehen wollen, abonnieren Sie den Kanal."
+    }
+  ]
+}

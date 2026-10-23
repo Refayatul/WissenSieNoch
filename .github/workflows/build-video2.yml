@@ -1,0 +1,119 @@
+name: Build video 2 (DDR Alltag)
+
+# Renders content/video2 on GitHub's runners, end to end:
+#   narrate  -> Gemini TTS, one call per scene, measured durations
+#   photos   -> 2 licensed Bundesarchiv stills (cached in build/)
+#   graphics -> headless Chromium + ffmpeg, one segment per scene
+#   assemble -> concat, mix, mux, report
+# Nothing heavy runs on the author's machine.
+#
+# Triggers: push touching video 2, or manual dispatch (with a quick 960x540
+# smoke option that renders the first two scenes only).
+
+on:
+  push:
+    paths:
+      - "content/video2/**"
+      - "scripts/narrate.py"
+      - "scripts/render_graphics.py"
+      - "scripts/assemble.py"
+      - "scripts/fetch_photos.py"
+      - "scripts/gemini_client.py"
+      - "scripts/youtube_meta.py"
+      - ".github/workflows/build-video2.yml"
+  workflow_dispatch:
+    inputs:
+      smoke:
+        description: "Smoke test: 960x540, scenes 1 and 4 only"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      # 1440p delivery: the master canvas is already 2560x1440, so the film is
+      # encoded at native size with no upscale. The smoke input renders 960x540.
+      OUT_WIDTH: ${{ github.event.inputs.smoke == 'true' && '960' || '2560' }}
+      SMOKE_SCENES: ${{ github.event.inputs.smoke == 'true' && '1,4' || '' }}
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check the API key is present
+        run: |
+          if [ -z "$GEMINI_API_KEY" ]; then
+            echo "::error::GEMINI_API_KEY secret is not set on this repository."
+            echo "Add it under Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+          echo "GEMINI_API_KEY is set (length ${#GEMINI_API_KEY}), value not logged."
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install Python deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install playwright
+
+      - name: Install Chromium for Playwright
+        run: python -m playwright install --with-deps chromium
+
+      - name: System tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+          ffmpeg -version | head -1
+
+      - name: Cache narration audio
+        uses: actions/cache@v4
+        with:
+          path: build/video2/audio
+          key: tts-v2-${{ hashFiles('content/video2/plan.json') }}
+          restore-keys: tts-v2-
+
+      - name: Narrate (Gemini TTS)
+        run: python scripts/narrate.py
+
+      - name: Fetch licensed photos
+        run: python scripts/fetch_photos.py
+
+      - name: Render graphics segments
+        run: |
+          if [ -n "$SMOKE_SCENES" ]; then
+            python scripts/render_graphics.py "$OUT_WIDTH" "$SMOKE_SCENES"
+          else
+            python scripts/render_graphics.py "$OUT_WIDTH"
+          fi
+
+      - name: Assemble final MP4
+        run: python scripts/assemble.py
+      - name: YouTube package (description, chapters, tags)
+        run: python scripts/youtube_meta.py
+
+      - name: Report
+        run: |
+          echo "### Video 2" >> $GITHUB_STEP_SUMMARY
+          cat build/video2/render_report.json >> $GITHUB_STEP_SUMMARY
+          ls -lh content/video2/out/
+
+      - name: Upload MP4
+        uses: actions/upload-artifact@v4
+        with:
+          name: video2-ddr-alltag-${{ github.run_number }}
+          path: |
+            content/video2/out/*.mp4
+            content/video2/out/*.txt
+            build/video2/render_report.json
+            build/video2/manifest.json
+            build/video2/credits.json
+          retention-days: 30
+          if-no-files-found: error
