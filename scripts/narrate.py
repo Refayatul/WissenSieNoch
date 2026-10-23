@@ -32,6 +32,7 @@ TTS_MODELS = [
     "gemini-3.1-flash-tts-preview",
     "gemini-2.5-flash-preview-tts",
 ]
+EXHAUSTED: set[str] = set()  # models whose daily quota is gone in this run
 
 STYLE = ""  # measured: Gemini TTS reads a style prefix ALOUD, so the voice is
 # steered by the text alone (short sentences, question marks, spelled-out
@@ -73,9 +74,11 @@ def normalize(path: Path) -> None:
 
 
 def speak_scene(text: str, voice: str, out: Path) -> tuple[bool, str]:
-    """Render one scene. Tries the cascade; returns (ok, model_used)."""
+    """Render one scene through the model cascade; returns (ok, model_used)."""
     key = get_key()
     for model in TTS_MODELS:
+        if model in EXHAUSTED:
+            continue
         for attempt in range(2):
             body = {
                 "contents": [{"parts": [{"text": (STYLE + "\n\n" + text) if STYLE else text}]}],
@@ -86,20 +89,28 @@ def speak_scene(text: str, voice: str, out: Path) -> tuple[bool, str]:
             }
             t0 = time.time()
             try:
-                reply = post_json(model, body, timeout=600, key=key)
+                reply = post_json(model, body, timeout=300, key=key)
             except urllib.error.HTTPError as exc:
-                msg = exc.read().decode()[:300]
-                if exc.code == 429:
-                    print(f"    429 on {model} (attempt {attempt + 1})", flush=True)
-                    time.sleep(20 + attempt * 20)
+                msg = exc.read().decode(errors="replace")
+                daily = any(m in msg for m in ("PerDay", "per day", "PerProject"))
+                if exc.code == 429 and daily:
+                    print(f"    {model}: daily quota gone, retiring for this run", flush=True)
+                    EXHAUSTED.add(model)
+                    break
+                if exc.code == 429 and attempt == 0:
+                    print(f"    {model}: rate limited, backing off 30s", flush=True)
+                    time.sleep(30)
                     continue
-                print(f"    HTTP {exc.code} on {model}: {msg[:160]}", flush=True)
+                print(f"    HTTP {exc.code} on {model}", flush=True)
                 break
-            except (urllib.error.URLError, TimeoutError) as exc:
+            except (urllib.error.URLError, TimeoutError, OSError) as exc:
                 print(f"    network {type(exc).__name__} on {model}", flush=True)
-                time.sleep(10)
-                continue
-            part = next((p for p in reply["candidates"][0]["content"]["parts"] if "inlineData" in p), None)
+                if attempt == 0:
+                    time.sleep(8)
+                    continue
+                break
+            parts = reply["candidates"][0]["content"]["parts"]
+            part = next((p for p in parts if "inlineData" in p), None)
             if not part:
                 print(f"    no audio from {model}", flush=True)
                 break
@@ -135,7 +146,9 @@ def build(plan_path: Path, audio_dir: Path, out_manifest: Path, cache: bool = Tr
             print(f"  scene {sc['id']:2d} {sc['type']:9s} {len(sc['words'])} chars", flush=True)
             ok, model = speak_scene(sc["words"], voice, wav)
             if not ok:
-                raise SystemExit(f"scene {sc['id']} failed on every TTS model")
+                print(f"  scene {sc['id']}: no TTS model available, skipping", flush=True)
+                skipped.append(sc["id"])
+                continue
             models_used.add(model)
         dur = wav_duration(wav)
         # a per-scene floor keeps the shortest lines on screen long enough to read
