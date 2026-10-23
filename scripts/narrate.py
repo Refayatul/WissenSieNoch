@@ -117,7 +117,17 @@ def build(plan_path: Path, audio_dir: Path, out_manifest: Path, cache: bool = Tr
     models_used: set[str] = set()
     scenes = []
     t = 0.0
+    t_started = time.time()
+    # Wall-clock budget: CI must never hang on a provider having a bad day.
+    # Whatever is unfinished is reported and skipped so the render still ships.
+    import os
+    budget = float(os.environ.get("NARRATION_BUDGET_S", "1500"))
+    skipped: list[int] = []
     for sc in plan["scenes"]:
+        if time.time() - t_started > budget:
+            print(f"  budget exhausted, skipping scene {sc['id']}", flush=True)
+            skipped.append(sc["id"])
+            continue
         wav = audio_dir / f"scene_{sc['id']:02d}.wav"
         if cache and wav.exists() and wav.stat().st_size > 1000:
             print(f"  scene {sc['id']:2d} cached ({wav_duration(wav):.1f}s)")
@@ -141,6 +151,7 @@ def build(plan_path: Path, audio_dir: Path, out_manifest: Path, cache: bool = Tr
         "id": plan["id"], "title": plan["title"], "fps": plan.get("fps", 30),
         "width": plan.get("width", 2560), "height": plan.get("height", 1440),
         "duration": round(t, 3), "voice": voice, "tts_models": sorted(models_used),
+        "skipped_scenes": skipped,
         "scenes": scenes,
     }
     out_manifest.parent.mkdir(parents=True, exist_ok=True)
