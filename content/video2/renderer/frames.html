@@ -142,7 +142,7 @@ function bg(t, variant) {
   ctx.fillRect(0, 0, W, H);
 }
 function grain(t, amount = 0.05) {
-  const r = rng(Math.floor(t * 24) + 7);
+  const r = rng(Math.floor(t * 60) + 7);
   ctx.save();
   ctx.globalAlpha = amount;
   for (let i = 0; i < 1400; i++) {
@@ -788,6 +788,59 @@ function overlays(lt, scene, dur, total) {
   }
 }
 
+/* ---------- continuous motion ---------- */
+// A slow push plus orbiting accents. Kept subtle: 1.00 -> 1.035 over the scene,
+// so no text ever leaves its safe area.
+function cameraPush(lt, dur) {
+  const p = clamp(dur > 0 ? lt / dur : 0);
+  const z = 1 + 0.035 * easeInOut(p);
+  ctx.save();
+  ctx.translate(W / 2, H / 2);
+  ctx.scale(z, z);
+  ctx.translate(-W / 2, -H / 2);
+}
+
+function cameraPop() {
+  ctx.restore();
+}
+
+function orbitAccents(lt, light) {
+  // two large, very soft shapes that drift on different periods so the field
+  // never looks like it is looping
+  const a1 = lt * 0.11, a2 = lt * 0.07 + 1.7;
+  const blobs = [
+    { cx: W * 0.78 + Math.cos(a1) * 160, cy: H * 0.24 + Math.sin(a1) * 90, r: 520,
+      c: light ? "rgba(200,71,47,.055)" : "rgba(217,164,65,.075)" },
+    { cx: W * 0.18 + Math.cos(a2) * 200, cy: H * 0.86 + Math.sin(a2) * 70, r: 430,
+      c: light ? "rgba(47,111,106,.05)" : "rgba(47,111,106,.10)" },
+  ];
+  for (const b of blobs) {
+    const g = ctx.createRadialGradient(b.cx, b.cy, 0, b.cx, b.cy, b.r);
+    g.addColorStop(0, b.c);
+    g.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(b.cx - b.r, b.cy - b.r, b.r * 2, b.r * 2);
+  }
+}
+
+function lightSweep(lt) {
+  // a soft diagonal highlight that crosses the frame every ~9 s
+  const period = 9.0;
+  const q = (lt % period) / period;
+  const x = -600 + q * (W + 1200);
+  ctx.save();
+  ctx.globalAlpha = 0.018;
+  ctx.translate(x, 0);
+  ctx.rotate(0.18);
+  const g = ctx.createLinearGradient(0, 0, 420, 0);
+  g.addColorStop(0, "rgba(255,255,255,0)");
+  g.addColorStop(.5, "rgba(255,255,255,.55)");
+  g.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, -H, 420, H * 3);
+  ctx.restore();
+}
+
 /* ---------- public API ---------- */
 window.setPlan = (p) => { plan = p; };
 window.renderFrame = (t) => {
@@ -799,7 +852,12 @@ window.renderFrame = (t) => {
     s.count = plan.scenes.length;
   }
   const lt = t - s.start, dur = s.end - s.start;
+  const light = !["hook", "bars", "timeline", "quote", "ticker"].includes(s.type);
+  orbitAccents(lt, light);
+  cameraPush(lt, dur);
   (DRAW[s.type] || scHook)(s, lt, dur);
+  cameraPop();
+  lightSweep(lt);
   overlays(lt, s, dur, plan.duration);
   return s.id;
 };

@@ -164,7 +164,7 @@
         }
       ],
       "foot": "Das Signal, das ein Land bewegte, war eine Rechnung.",
-      "words": "Nun zur Geschichte, die viele umtreibt. Der siebzehnte Juni neunzehnhundertdreiundfünfzig begann nicht mit einer Rede, sondern mit einer Rechnung. Die SED hatte die Arbeitsnormen im Baugewerbe um zehn Prozent erhöht, also mehr Arbeit für gleichen Lohn. Aus dem Streik der Bauarbeiter wurde in wenigen Tagen eine Erhebung im ganzen Land."
+      "words": "Nun zur Geschichte, die viele umtreibt. Der siebzehnte Juni neunzehnhundertdreiundfünfzig begann nicht mit einer Rede, sondern mit einer Rechnung. Die Arbeitsnormen im Baugewerbe wurden um zehn Prozent erhöht, also mehr Arbeit für gleichen Lohn. Aus dem Streik der Bauarbeiter wurde in wenigen Tagen eine Bewegung im ganzen Land."
     },
     {
       "id": 12,
@@ -232,21 +232,6 @@
       "words": "Bezahlt wurde dort mit Westgeld, ab neunzehnhundertneunundsiebzig auch mit Forumschecks. Nach dem Wechsel an der Parteispitze neunzehnhunderteinundsiebzig wuchs das Netz stark, sodass neunzehnhundertvierundsiebzig weit über einhundert Filialen existierten. Am siebten Oktober neunzehnhundertneunundvierzig wurde die DDR gegründet. Am neunten November neunzehnhundertneunundachtzig fiel die Mauer."
     },
     {
-      "id": 14,
-      "type": "quote",
-      "quote": "Wo die Uhr wohnt, da wohnt die Politik.",
-      "by": "Der Befund",
-      "words": "Dazwischen liegen vierzig Jahre Alltag. Das ist die eigentliche Sensation: nicht der Ausnahmezustand, sondern der Alltag. Wenn Sie diesen Alltag verstehen wollen, schreiben Sie keinen Protest an die Wand. Schreiben Sie einen Tagesplan auf.",
-      "context": "Der Befund, auf den alle Beobachtungen dieses Videos zulaufen.",
-      "big": "UHR"
-    },
-    {
-      "id": 15,
-      "type": "end",
-      "headline": "Essen Sie mittags oder abends warm?",
-      "words": "Wo die Uhr wohnt, da wohnt die Politik. Und eine ganze Republik hat nicht um achtzehn Uhr, sondern um elf Uhr dreißig zu Mittag gegessen. Wenn Sie diesen Takt kennen, verstehen Sie, warum deutsche Erinnerungen heute so oft an Uhrzeiten hängen: an elf Uhr dreißig, an sechzehn Uhr fünfundvierzig, an siebzehn Uhr sieben. Schreiben Sie in die Kommentare: Essen Sie mittags oder abends warm? Und wenn Sie weiter mitgehen wollen, abonnieren Sie den Kanal, denn im nächsten Teil geht es in den Betrieb."
-    },
-    {
       "id": 16,
       "type": "ticker",
       "kicker": "DIE ZAHLEN",
@@ -307,6 +292,49 @@
       ],
       "foot": "Vier Orte, derselbe Fahrplan.",
       "words": "Und das galt überall: in Rostock zwischen Hafen und Werft, in Berlin, in Halle-Neustadt und in Leipzig. Vier Orte, ein Takt. Hier wurde nicht um achtzehn Uhr gekocht, sondern um elf Uhr dreißig gegessen, und das in allen vier Städten gleichzeitig. So funktioniert eine Ordnung, die niemand aufschreiben musste."
+    },
+    {
+      "id": 14,
+      "type": "quote",
+      "quote": "Wo die Uhr wohnt, da wohnt die Politik.",
+      "by": "Der Befund",
+      "words": "Dazwischen liegen vierzig Jahre Alltag. Das ist die eigentliche Sensation: nicht der Ausnahmezustand, sondern der Alltag. Wenn Sie diesen Alltag verstehen wollen, schauen Sie nicht auf die großen Ereignisse. Schauen Sie auf den Tagesplan.",
+      "context": "Der Befund, auf den alle Beobachtungen dieses Videos zulaufen.",
+      "big": "UHR"
+    },
+    {
+      "id": 18,
+      "type": "ticker",
+      "kicker": "DAS FAZIT",
+      "title": "Was bleibt",
+      "items": [
+        {
+          "value": 11,
+          "unit": "Uhr 30",
+          "label": "die warme Mahlzeit in der Kantine",
+          "color": "#d9a441"
+        },
+        {
+          "value": 1,
+          "unit": "Mark je m²",
+          "label": "Neubaumiete, vom Staat getragen",
+          "color": "#c8472f"
+        },
+        {
+          "value": 1973,
+          "unit": "",
+          "label": "ab hier: Wohnungsbauserie 70",
+          "color": "#2f6f6a"
+        }
+      ],
+      "foot": "Wo die Uhr wohnt, da wohnt die Politik.",
+      "words": "Schreiben Sie in die Kommentare: Essen Sie mittags oder abends warm? Und wenn Sie weiter mitgehen wollen, abonnieren Sie den Kanal, denn im nächsten Teil geht es in den Betrieb, auf die Baustelle und in einen Trabant, der gerade unterwegs ist."
+    },
+    {
+      "id": 15,
+      "type": "end",
+      "words": "Abonnieren kostet nichts. Im nächsten Teil geht es in den Betrieb, auf die Baustelle und in einen Trabant, der gerade unterwegs ist.",
+      "headline": "Essen Sie mittags oder abends warm?"
     }
   ]
 }
