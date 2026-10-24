@@ -86,6 +86,20 @@ def main() -> int:
     manifest = {"id": plan["id"], "title": plan["title"], "fps": plan.get("fps", 25),
                 "width": plan.get("width", 2560), "height": plan.get("height", 1440),
                 "duration": round(t, 3), "voice": plan.get("voice", "Charon"), "scenes": entries}
+    # Keep display fields in sync with the plan. Build scripts that construct the
+    # manifest from narration order used to drop caption/sub/headline edits made
+    # later, so the render silently used stale text.
+    by_id = {x["id"]: x for x in scenes}
+    changed = 0
+    for entry in manifest["scenes"]:
+        src = by_id.get(entry["id"], {})
+        for key in ("caption", "sub", "headline", "title", "kicker", "quote", "by", "context",
+                    "big", "items", "bars", "steps", "events", "columns", "points", "foot", "note"):
+            if key in src and entry.get(key) != src[key]:
+                entry[key] = src[key]
+                changed += 1
+    print(f"synced {changed} display field(s) from the plan")
+
     (BUILD / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
     for e in entries:
         print(f"  {e['id']:2d} {e['type']:9s} {e['duration']:6.2f}s")

@@ -326,7 +326,7 @@ function scQuestion(s, lt, dur) {
 function scPhoto(s, lt, dur) {
   // archival photo with Ken Burns + caption card; photo path comes from the plan
   bg(lt, "dark");
-  const img = sceneImages[s.id];
+  const img = sceneImages[s.image] || sceneImages[s.id];   // photo scenes name their image key
   const box = { x: 150, y: 120, w: W - 300, h: 1010 };
   if (img && img.complete && img.naturalWidth) {
     const zoom = lerp(1.02, 1.12, lnorm(lt, dur));
@@ -475,7 +475,7 @@ function scCompare(s, lt, dur) {
     ctx.save(); ctx.globalAlpha = p0 * (ci === 1 ? .10 : .06);
     ctx.fillStyle = ci === 0 ? C.grey2 : C.teal;
     roundRect(cx - 30, 300, 560, 790, 18); ctx.fill(); ctx.restore();
-    drawText(col.head, cx, 330, { size: 50, weight: 800, color: ci === 0 ? C.grey2 : C.teal, alpha: p0, maxW: 520 });
+    drawText(col.head, cx, 330, { size: 46, weight: 800, color: ci === 0 ? C.grey2 : C.teal, alpha: p0, maxW: 520, lineH: 1.1 });
     drawText(col.year || "", cx, 400, { size: 28, weight: 600, color: C.grey, alpha: p0 });
     (col.items || []).forEach(function (item, i) {
       const p = clamp((lt - (1.0 + ci * .35 + i * .42)) / .55);
@@ -541,18 +541,22 @@ function scChain(s, lt, dur) {
     const p = clamp((lt - (.5 + i * .9)) / .8);
     if (p <= 0) return;
     const x = 160 + i * (bw + gapX);
-    const y = 430;
-    ctx.save(); ctx.globalAlpha = p;
+    const y = 400;
+    ctx.save();
     ctx.translate(0, (1 - easeOut(p)) * 40);
+    ctx.globalAlpha = p;
     ctx.fillStyle = st.dark ? C.ink : "#fffdf8";
     ctx.strokeStyle = st.dark ? "rgba(0,0,0,.2)" : "rgba(20,23,27,.14)";
     ctx.lineWidth = 3;
-    roundRect(x, y, bw, 500, 24); ctx.fill(); ctx.stroke();
-    const col = st.dark ? C.white : C.ink;
-    drawText(st.kicker || "", x + 34, y + 36, { size: 28, weight: 800, color: st.accent || C.oxide, track: 3, maxW: bw - 60 });
-    drawText(st.title, x + 34, y + 96, { size: 54, weight: 800, color: col, maxW: bw - 60, lineH: 1.08 });
-    drawText(st.body || "", x + 34, y + 320, { size: 32, weight: 500, color: st.dark ? "rgba(251,248,242,.75)" : C.grey2, maxW: bw - 68, lineH: 1.28 });
+    roundRect(x, y, bw, 620, 24); ctx.fill(); ctx.stroke();
     ctx.restore();
+    // text at full alpha: the card background already carries the fade
+    const col = st.dark ? C.white : C.ink;
+    const ta = easeOut(p);
+    drawText(st.kicker || "", x + 34, y + 36, { size: 28, weight: 800, color: st.accent || C.oxide, track: 3, maxW: bw - 60, alpha: ta });
+    drawText(st.title, x + 34, y + 96, { size: 50, weight: 800, color: col, maxW: bw - 60, lineH: 1.08, alpha: ta });
+    drawText(st.body || "", x + 34, y + 380, { size: 30, weight: 500, color: st.dark ? "rgba(251,248,242,.80)" : C.grey2, maxW: bw - 68, lineH: 1.28, alpha: ta });
+    // (text drawn at full alpha above; the card background already carries the fade)
     if (i < n - 1) {
       const ap = clamp((lt - (.85 + i * .9)) / .5);
       if (ap > 0) {
@@ -566,11 +570,9 @@ function scChain(s, lt, dur) {
     }
   });
   const pf = clamp((lt - (1.4 + n * .9)) / .9);
-  drawText(s.foot || "", 160, 1030, { size: 48, weight: 700, color: C.oxideDk, maxW: 2200, alpha: pf });
+  drawText(s.foot || "", 160, 1110, { size: 52, weight: 700, color: C.oxideDk, maxW: 2200, alpha: pf });
   grain(lt, .03); vignette(.22);
 }
-
-/* vertical timeline of dates */
 function scTimeline(s, lt, dur) {
   bg(lt, "dark");
   sceneKicker(s.kicker || "DIE ZEITLEISTE", lt);
@@ -829,12 +831,12 @@ function lightSweep(lt) {
   const q = (lt % period) / period;
   const x = -600 + q * (W + 1200);
   ctx.save();
-  ctx.globalAlpha = 0.018;
+  ctx.globalAlpha = 0.05 * (0.35 + 0.65 * Math.abs(Math.sin(q * Math.PI)));
   ctx.translate(x, 0);
   ctx.rotate(0.18);
   const g = ctx.createLinearGradient(0, 0, 420, 0);
   g.addColorStop(0, "rgba(255,255,255,0)");
-  g.addColorStop(.5, "rgba(255,255,255,.55)");
+  g.addColorStop(.5, "rgba(255,255,255,.30)");
   g.addColorStop(1, "rgba(255,255,255,0)");
   ctx.fillStyle = g;
   ctx.fillRect(0, -H, 420, H * 3);
