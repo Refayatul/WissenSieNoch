@@ -1,30 +1,19 @@
 name: Build video 2 (DDR Alltag)
 
-# Renders content/video2 on GitHub's runners, end to end:
-#   narrate  -> Gemini TTS, one call per scene, measured durations
-#   photos   -> 2 licensed Bundesarchiv stills (cached in build/)
-#   graphics -> headless Chromium + ffmpeg, one segment per scene
-#   assemble -> concat, mix, mux, report
-# Nothing heavy runs on the author's machine.
-#
-# Triggers: push touching video 2, or manual dispatch (with a quick 960x540
-# smoke option that renders the first two scenes only).
-
 on:
   push:
     paths:
       - "content/video2/**"
-      - "scripts/narrate.py"
-      - "scripts/render_graphics.py"
-      - "scripts/assemble.py"
-      - "scripts/fetch_photos.py"
-      - "scripts/gemini_client.py"
-      - "scripts/youtube_meta.py"
+      - "scripts/**"
       - ".github/workflows/build-video2.yml"
   workflow_dispatch:
     inputs:
       smoke:
-        description: "Smoke test: 960x540, scenes 1 and 4 only"
+        description: "Smoke test: 960x540, scenes 1,2,5,8 only"
+        type: boolean
+        default: false
+      force_narration:
+        description: "Re-render narration (costs one TTS request per model)"
         type: boolean
         default: false
 
@@ -32,27 +21,75 @@ permissions:
   contents: read
 
 jobs:
-  render:
+  narration:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
-    env:
-      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-      # 1440p delivery: the master canvas is already 2560x1440, so the film is
-      # encoded at native size with no upscale. The smoke input renders 960x540.
-      OUT_WIDTH: ${{ github.event.inputs.smoke == 'true' && '960' || '2560' }}
-      SMOKE_SCENES: ${{ github.event.inputs.smoke == 'true' && '1,4' || '' }}
-      PYTHONUNBUFFERED: "1"
+    timeout-minutes: 40
+    outputs:
+      cache_key: ${{ steps.key.outputs.key }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check the API key is present
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Script hash (cache key)
+        id: key
+        run: echo "key=tts-v2-${{ hashFiles('content/video2/plan.json') }}" >> $GITHUB_OUTPUT
+
+      - name: Restore narration
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: build/video2/audio
+          key: ${{ steps.key.outputs.key }}
+
+      - name: Check quota before spending anything
+        if: steps.cache.outputs.cache-hit != 'true' || inputs.force_narration == true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python scripts/check_quota.py
+
+      - name: Narrate once (one request)
+        if: steps.cache.outputs.cache-hit != 'true' || inputs.force_narration == true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          if [ -z "$GEMINI_API_KEY" ]; then
-            echo "::error::GEMINI_API_KEY secret is not set on this repository."
-            echo "Add it under Settings > Secrets and variables > Actions."
-            exit 1
+          if [ "${{ inputs.force_narration }}" = "true" ]; then
+            python scripts/narrate_once.py --force
+          else
+            python scripts/narrate_once.py
           fi
-          echo "GEMINI_API_KEY is set (length ${#GEMINI_API_KEY}), value not logged."
+
+      - name: Transcribe and cut at the act markers
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python scripts/recheck_narration.py
+
+      - name: Upload narration for the render jobs
+        uses: actions/upload-artifact@v4
+        with:
+          name: narration-v2
+          path: build/video2/audio/*.wav
+          retention-days: 3
+
+      - name: Upload manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: manifest-v2
+          path: build/video2/manifest.json
+          retention-days: 3
+
+  render:
+    needs: narration
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        act: [1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
         with:
@@ -65,66 +102,84 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r scripts/requirements.txt
 
-      - name: Install Chromium for Playwright
+      - name: Install Chromium
         run: python -m playwright install --with-deps chromium
 
-      - name: System tools
-        # The ubuntu-latest image ships ffmpeg and DejaVu, so apt is skipped.
-        # Only install when something is genuinely missing, and cap the wait so a
-        # slow mirror can never hang the render (it did: 9 minutes on apt-get).
-        run: |
-          set -euo pipefail
-          have_ffmpeg=0
-          have_font=0
-          command -v ffmpeg >/dev/null && have_ffmpeg=1
-          fc-list 2>/dev/null | grep -qi "DejaVu Sans" && have_font=1
-          if [ "$have_ffmpeg" = 0 ] || [ "$have_font" = 0 ]; then
-            echo "installing missing packages (ffmpeg=$have_ffmpeg font=$have_font)"
-            timeout 300 sudo apt-get update -qq || echo "apt update slow, continuing"
-            timeout 300 sudo apt-get install -y -qq --no-install-recommends ffmpeg fonts-dejavu-core \
-              || echo "apt install did not finish; will retry per-feature if needed"
-          fi
-          ffmpeg -version | head -1
-          fc-list | grep -ci "dejavu" || true
-
-      - name: Cache narration audio
-        uses: actions/cache@v4
+      - name: Download narration + manifest
+        uses: actions/download-artifact@v4
         with:
+          name: manifest-v2
+          path: build/video2
+      - uses: actions/download-artifact@v4
+        with:
+          name: narration-v2
           path: build/video2/audio
-          key: tts-v2-${{ hashFiles('content/video2/plan.json') }}
-          restore-keys: tts-v2-
-
-      - name: Narrate (Gemini TTS)
-        # Batched: free tier allows ~10 requests/day per model, so the script is
-        # rendered in one act call and cut at its marker pauses.
-        run: python scripts/narrate_onetake.py
 
       - name: Fetch licensed photos
         run: python scripts/fetch_photos.py
 
-      - name: Render graphics segments
+      - name: Render act ${{ matrix.act }}
+        env:
+          OUT_WIDTH: ${{ inputs.smoke == true && '960' || '2560' }}
+        run: python scripts/render_graphics.py "$OUT_WIDTH" --act ${{ matrix.act }} --acts 3
+
+      - name: Upload segments
+        uses: actions/upload-artifact@v4
+        with:
+          name: segments-act-${{ matrix.act }}
+          path: build/video2/segments/*.mp4
+          retention-days: 3
+          if-no-files-found: error
+
+  assemble:
+    needs: [narration, render]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Download manifest + narration
+        uses: actions/download-artifact@v4
+        with:
+          name: manifest-v2
+          path: build/video2
+      - uses: actions/download-artifact@v4
+        with:
+          name: narration-v2
+          path: build/video2/audio
+
+      - name: Download all segments
+        uses: actions/download-artifact@v4
+        with:
+          pattern: segments-act-*
+          path: build/segments
+          merge-multiple: true
+
+      - name: Collect segments
         run: |
-          if [ -n "$SMOKE_SCENES" ]; then
-            python scripts/render_graphics.py "$OUT_WIDTH" "$SMOKE_SCENES"
-          else
-            python scripts/render_graphics.py "$OUT_WIDTH"
-          fi
+          mkdir -p build/video2/segments
+          cp -v build/segments/*.mp4 build/video2/segments/
+          ls -1 build/video2/segments | wc -l
 
       - name: Assemble final MP4
         run: python scripts/assemble.py
-      - name: YouTube package (description, chapters, tags)
+
+      - name: YouTube package
         run: python scripts/youtube_meta.py
 
       - name: Report
         run: |
           echo "### Video 2" >> $GITHUB_STEP_SUMMARY
           cat build/video2/render_report.json >> $GITHUB_STEP_SUMMARY
-          ls -lh content/video2/out/
 
       - name: Upload MP4
         uses: actions/upload-artifact@v4
         with:
-          name: video2-ddr-alltag-${{ github.run_number }}
+          name: video2-ddr-alltag
           path: |
             content/video2/out/*.mp4
             content/video2/out/*.txt

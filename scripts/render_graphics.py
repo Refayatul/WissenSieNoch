@@ -100,7 +100,19 @@ def main() -> int:
 
     out_w = int(sys.argv[1]) if len(sys.argv) > 1 else 1920
     out_h = out_w * 9 // 16
-    only = {int(x) for x in sys.argv[2].split(",")} if len(sys.argv) > 2 else None
+    # --act K --acts N renders only the K-th slice of the scene list, so CI can
+    # split the work across runners and a failure costs one act, not the film.
+    only = None
+    if "--act" in sys.argv:
+        act = int(sys.argv[sys.argv.index("--act") + 1])
+        acts = int(sys.argv[sys.argv.index("--acts") + 1]) if "--acts" in sys.argv else 1
+        ids = [s["id"] for s in manifest["scenes"]]
+        per = max(1, round(len(ids) / acts))
+        chunk = ids[(act - 1) * per: act * per] if act < acts else ids[(act - 1) * per:]
+        only = set(chunk)
+        print(f"act {act}/{acts}: scenes {sorted(only)}")
+    elif len(sys.argv) > 2 and sys.argv[2] not in ("", "-"):
+        only = {int(x) for x in sys.argv[2].split(",")}
     fps = manifest["fps"]
     outdir = ROOT / "build/video2/segments"
 
@@ -122,6 +134,8 @@ def main() -> int:
             if only and scene["id"] not in only:
                 continue
             out = outdir / f"scene_{scene['id']:02d}.mp4"
+            if only is not None and scene["id"] not in only:
+                continue
             if out.exists() and out.stat().st_size > 20000:
                 print(f"  scene {scene['id']:2d} cached")
                 continue

@@ -1,7 +1,7 @@
 {
   "id": "video2",
   "title": "Um 11:30 aß eine ganze Republik zu Mittag",
-  "fps": 30,
+  "fps": 25,
   "width": 2560,
   "height": 1440,
   "voice": "Charon",
@@ -11,13 +11,13 @@
     {
       "id": 1,
       "type": "hook",
-      "words": "Am sechsten Oktober, neunzehnhundertneunundvierzig, einem Donnerstagmorgen, wird es in Halle-Neustadt hell. Ein Plattenbau, siebter Stock. Der Wecker klingelt, und fast alle in diesem Haus stehen gleichzeitig auf. Warum?",
+      "words": "Am sechsten Oktober neunzehnhundertneunundvierzig, einem Donnerstag, wird es in Halle-Neustadt hell. Ein Plattenbau, siebter Stock. Der Wecker klingelt, und fast alle in diesem Haus stehen gleichzeitig auf. Warum? Weil hier nicht die Uhr der Familie den Tag bestimmt, sondern der Fahrplan des Betriebs. Bleiben Sie dran.",
       "note": "Hook 1: Ort, Zeit, offene Frage"
     },
     {
       "id": 2,
       "type": "question",
-      "words": "Woran erkennt man einen Ostdeutschen in der ersten Minute? Nicht am Dialekt, nicht an der Kleidung. Am Abendessen.",
+      "words": "Woran erkennt man einen Ostdeutschen in der ersten Minute? Nicht am Dialekt. Nicht an der Kleidung. Am Abendessen. Wer in der DDR aufgewachsen ist, isst bis heute warm, wenn andere Kaffee trinken. Das ist keine Nostalgie. Es sind Uhrzeiten.",
       "note": "Hook 2: Musterbruch"
     },
     {
@@ -25,7 +25,7 @@
       "type": "quote",
       "quote": "Wer in der DDR aufgewachsen ist, isst bis heute warm, wenn andere Kaffee trinken.",
       "by": "Es sind Uhrzeiten – keine Nostalgie",
-      "words": "Wer in der DDR aufgewachsen ist, isst bis heute warm, wenn andere Kaffee trinken. Das ist keine Nostalgie. Es sind Uhrzeiten. Eine unsichtbare Ordnung, die den Alltag genauso prägte wie Mauer und Betrieb.",
+      "words": "Eine unsichtbare Ordnung, die den Alltag genauso prägte wie Mauer und Betrieb. Fangen wir mit der Küche an. Die Hauptmahlzeit war für viele Werktätige das Mittagessen in der Betriebskantine. Die Frühschicht begann in vielen Betrieben um sechs Uhr, die Kantine öffnete um elf Uhr dreißig.",
       "context": "Betriebskantine, Frühschicht, ein Takt, der alle Familien erfasste.",
       "big": "11:30"
     },
@@ -35,12 +35,12 @@
       "caption": "Betriebskantine",
       "sub": "Die Hauptmahlzeit für Werktätige",
       "image": "kantine",
-      "words": "Fangen wir mit der Küche an. Die Hauptmahlzeit war für viele Werktätige das Mittagessen in der Betriebskantine. Die Frühschicht begann in vielen Betrieben um sechs Uhr, die Kantine öffnete um elf Uhr dreißig. Wer bis fünfzehn Uhr arbeiten musste, hatte seine warme Mahlzeit hinter sich, bevor die Kinder aus der Schule kamen."
+      "words": "Wer bis fünfzehn Uhr arbeiten musste, hatte seine warme Mahlzeit hinter sich, bevor die Kinder aus der Schule kamen. Die Kantine war billig, warm und gut besetzt. Deshalb ein schöner Satz über diese Zeit: Beim Essen wurde gearbeitet, und bei der Arbeit wurde gegessen."
     },
     {
       "id": 5,
       "type": "daychart",
-      "words": "Stellen Sie sich das als Tagesdiagramm vor. Frühschicht, Kantine, Nachmittag, Feierabend. Wenn Ihre Kantine um elf schließt und der Kindergarten um fünf, dann kochen Sie mittags. Nicht weil Sie wollen. Weil der Plan es verlangt."
+      "words": "Stellen Sie sich das als Tagesdiagramm vor. Frühschicht, Kantine, Nachmittag, Feierabend. Der Kindergarten schloss um sechzehn Uhr fünfundvierzig. Wenn Ihre Kantine um elf schließt und der Kindergarten um fünf, dann kochen Sie mittags. Nicht weil Sie wollen, sondern weil der Plan es verlangt."
     },
     {
       "id": 6,
@@ -48,7 +48,7 @@
       "caption": "Plattenbau, Neubaugebiet",
       "sub": "Wohnung als Zuteilung, nicht als Markt",
       "image": "platte",
-      "words": "Da ist der zweite Anker: die Wohnung. Der Wohnungsbau war kein Markt, sondern eine Zuteilung. Die Miete in Neubauten lag bei etwa einer Mark pro Quadratmeter im Monat und blieb über Jahrzehnte gleich."
+      "words": "Da ist der zweite Anker: die Wohnung. Der Wohnungsbau war kein Markt, sondern eine Zuteilung. Die Miete in Neubauten lag bei etwa einer Mark pro Quadratmeter im Monat und blieb über Jahrzehnte fast unverändert, weil der Staat den Rest trug."
     },
     {
       "id": 7,
@@ -72,7 +72,7 @@
         }
       ],
       "foot": "Ein Preis, der nie den Markt sah – deshalb blieb er so lange gleich.",
-      "words": "Nach neunzehnhunderteinundsiebzig wurde die Wohnungsfrage zum Kernstück der Sozialpolitik; das staatliche Wohnungsbauprogramm von neunzehnhundertzweiundsiebzig sollte den Wohnraummangel bis neunzehnhundertneunzig beseitigen. Man baute schnell, und man baute in Beton, nach einem Muster: die Wohnungsbauserie siebzig."
+      "words": "Nach neunzehnhunderteinundsiebzig wurde die Wohnungsfrage zum Kernstück der Sozialpolitik. Das staatliche Wohnungsbauprogramm von neunzehnhundertzweiundsiebzig sollte den Wohnraummangel bis neunzehnhundertneunzig beseitigen. Man baute schnell, und man baute in Beton."
     },
     {
       "id": 8,
@@ -102,7 +102,7 @@
         }
       ],
       "foot": "Für viele Familien der größte Komfortsprung ihres Lebens.",
-      "words": "Sie wurde um neunzehnhundertsiebzig entwickelt, ab neunzehnhundertzweiundsiebzig verbindlich beschlossen und ab neunzehnhundertdreiundsiebzig millionenfach errichtet. Diese Wohnung war nicht nur eine Wohnung. Sie war ein Interface. Warmwasser, Zentralheizung, Bad, Innen-WC. Klingt selbstverständlich?"
+      "words": "Gebaut wurde nach einem Muster: die Wohnungsbauserie siebzig. Sie wurde um neunzehnhundertsiebzig entwickelt, ab neunzehnhundertzweiundsiebzig verbindlich beschlossen und ab neunzehnhundertdreiundsiebzig millionenfach errichtet. Diese Wohnung war nicht nur eine Wohnung. Sie war ein Interface: Warmwasser, Zentralheizung, Bad, Innen-WC."
     },
     {
       "id": 9,
@@ -126,14 +126,14 @@
         }
       ],
       "foot": "Ein gebrauchter Trabant kostete oft mehr als ein neuer.",
-      "words": "In vielen Altbauten hieß das noch: Ofen heizen, Kohlen tragen, Wasser schleppen. Der Umzug in den Neubau war für viele Familien der größte Komfortsprung ihres Lebens. Deshalb ist der Plattenbau bis heute für viele ein Sehnsuchtsort. Für andere ein Albtraum. Beides ist ehrlich."
+      "words": "Klingt selbstverständlich? In vielen Altbauten hieß das noch: Ofen heizen, Kohlen tragen, Wasser schleppen. Der Umzug in den Neubau war für viele Familien der größte Komfortsprung ihres Lebens. Deshalb ist der Plattenbau bis heute für viele ein Sehnsuchtsort. Für andere ein Albtraum. Beides ist ehrlich."
     },
     {
       "id": 10,
       "type": "quote",
       "quote": "Hauptbahnhof, Gleis drei, siebzehn Uhr. Kein Handy, kein Ersatzplan.",
       "by": "Wer sich verzählte, stand allein",
-      "words": "Und dann gab es noch einen kargen Luxus: das Telefon. Private Anschlüsse waren knapp, und die Wartezeit über die Post der DDR konnte viele Jahre dauern. Die Folgen waren spürbar. Verabredungen waren Verabredungen.",
+      "words": "Und dann gab es noch einen kargen Luxus: das Telefon. Private Anschlüsse waren knapp, und die Wartezeit über die Post der DDR konnte viele Jahre dauern. Verabredungen waren deshalb Verabredungen. Hauptbahnhof, Gleis drei, siebzehn Uhr. Kein Handy, kein Anruf, kein Ersatzplan.",
       "context": "Verabredungen ohne Rückruf – der Preis eines knappen Anschlusses.",
       "big": "17:00"
     },
@@ -164,7 +164,7 @@
         }
       ],
       "foot": "Das Signal, das ein Land bewegte, war eine Rechnung.",
-      "words": "Nun zur Frage, die viele umtreibt. Der siebzehnte Juni neunzehnhundertdreiundfünfzig begann nicht mit einer Rede, sondern mit einer Rechnung. Die SED hatte die Arbeitsnormen im Baugewerbe um zehn Prozent erhöht, also mehr Arbeit für gleichen Lohn."
+      "words": "Nun zur Geschichte, die viele umtreibt. Der siebzehnte Juni neunzehnhundertdreiundfünfzig begann nicht mit einer Rede, sondern mit einer Rechnung. Die SED hatte die Arbeitsnormen im Baugewerbe um zehn Prozent erhöht, also mehr Arbeit für gleichen Lohn. Aus dem Streik der Bauarbeiter wurde in wenigen Tagen eine Erhebung im ganzen Land."
     },
     {
       "id": 12,
@@ -192,7 +192,7 @@
         }
       ],
       "foot": "Zwei Welten im selben Land – und ein Schaufenster ins Ausland.",
-      "words": "Aus dem Streik von Bauarbeitern wurde in wenigen Tagen eine Erhebung im ganzen Land. Bis heute ist das der Moment, an dem man sieht, wie eng Alltag und Politik ineinander stecken."
+      "words": "Dieselbe Mechanik finden Sie im Kleinen, im Regal. Für die Grundversorgung gab es zwei Läden, die man auseinanderhalten muss. Die HO war ein staatliches Handelsunternehmen von neunzehnhundertachtundvierzig. Der Konsum war die genossenschaftliche Alternative. Zwei Welten im selben Land. Darüber lag ein dritter Laden, der ganz anders roch: der Intershop."
     },
     {
       "id": 13,
@@ -229,14 +229,14 @@
         }
       ],
       "foot": "Dazwischen liegen vierzig Jahre Alltag. Das ist die eigentliche Sensation.",
-      "words": "Am siebten Oktober neunzehnhundertneunundvierzig wurde die DDR gegründet. Am neunten November neunzehnhundertneunundachtzig fiel die Mauer. Dazwischen liegen vierzig Jahre Alltag. Und das ist die eigentliche Sensation: nicht der Ausnahmezustand, sondern der Alltag."
+      "words": "Bezahlt wurde dort mit Westgeld, ab neunzehnhundertneunundsiebzig auch mit Forumschecks. Nach dem Wechsel an der Parteispitze neunzehnhunderteinundsiebzig wuchs das Netz stark, sodass neunzehnhundertvierundsiebzig weit über einhundert Filialen existierten. Am siebten Oktober neunzehnhundertneunundvierzig wurde die DDR gegründet. Am neunten November neunzehnhundertneunundachtzig fiel die Mauer."
     },
     {
       "id": 14,
       "type": "quote",
       "quote": "Wo die Uhr wohnt, da wohnt die Politik.",
       "by": "Der Befund",
-      "words": "Ein letzter Satz zum Mitnehmen. Wenn Sie diesen Alltag verstehen wollen, schreiben Sie keinen Protest an die Wand. Schreiben Sie einen Tagesplan auf.",
+      "words": "Dazwischen liegen vierzig Jahre Alltag. Das ist die eigentliche Sensation: nicht der Ausnahmezustand, sondern der Alltag. Wenn Sie diesen Alltag verstehen wollen, schreiben Sie keinen Protest an die Wand. Schreiben Sie einen Tagesplan auf.",
       "context": "Der Befund, auf den alle Beobachtungen dieses Videos zulaufen.",
       "big": "UHR"
     },
@@ -244,7 +244,69 @@
       "id": 15,
       "type": "end",
       "headline": "Essen Sie mittags oder abends warm?",
-      "words": "Und eine ganze Republik hat nicht um achtzehn Uhr, sondern um elf Uhr dreißig zu Mittag gegessen. Schreiben Sie in die Kommentare: Essen Sie mittags oder abends warm? Und wenn Sie weiter mitgehen wollen, abonnieren Sie den Kanal."
+      "words": "Wo die Uhr wohnt, da wohnt die Politik. Und eine ganze Republik hat nicht um achtzehn Uhr, sondern um elf Uhr dreißig zu Mittag gegessen. Wenn Sie diesen Takt kennen, verstehen Sie, warum deutsche Erinnerungen heute so oft an Uhrzeiten hängen: an elf Uhr dreißig, an sechzehn Uhr fünfundvierzig, an siebzehn Uhr sieben. Schreiben Sie in die Kommentare: Essen Sie mittags oder abends warm? Und wenn Sie weiter mitgehen wollen, abonnieren Sie den Kanal, denn im nächsten Teil geht es in den Betrieb."
+    },
+    {
+      "id": 16,
+      "type": "ticker",
+      "kicker": "DIE ZAHLEN",
+      "title": "Der Alltag in Zahlen",
+      "items": [
+        {
+          "value": 1,
+          "unit": "Mark je m²",
+          "label": "Miete im Neubau",
+          "color": "#d9a441"
+        },
+        {
+          "value": 26,
+          "unit": "PS",
+          "label": "Trabant 601, Zweitaktmotor",
+          "color": "#c8472f"
+        },
+        {
+          "value": 1974,
+          "unit": "",
+          "label": "über 100 Intershop-Filialen",
+          "color": "#2f6f6a"
+        }
+      ],
+      "foot": "Drei Zahlen, ein System.",
+      "words": "Halten wir drei Zahlen fest. Eine Mark je Quadratmeter Miete im Neubau. Sechsundzwanzig Pferdestärken im Trabant sechshunderteins. Und neunzehnhundertvierundsiebzig weit über einhundert Intershop-Filialen. Drei Zahlen, die zusammen einen ganzen Alltag beschreiben: Miete, Auto und Warenkorb."
+    },
+    {
+      "id": 17,
+      "type": "map",
+      "kicker": "DIE KARTE",
+      "title": "Wo der Alltag stattfand",
+      "points": [
+        {
+          "x": -70,
+          "y": -95,
+          "label": "Rostock",
+          "note": "Hafen, Werften"
+        },
+        {
+          "x": -30,
+          "y": -35,
+          "label": "Berlin",
+          "note": "Hauptstadt"
+        },
+        {
+          "x": 5,
+          "y": -55,
+          "label": "Halle",
+          "note": "Plattenbau"
+        },
+        {
+          "x": 45,
+          "y": 20,
+          "label": "Leipzig",
+          "note": "Messe, Betriebe"
+        }
+      ],
+      "foot": "Vier Orte, derselbe Fahrplan.",
+      "words": "Und das galt überall: in Rostock zwischen Hafen und Werft, in Berlin, in Halle-Neustadt und in Leipzig. Vier Orte, ein Takt. Hier wurde nicht um achtzehn Uhr gekocht, sondern um elf Uhr dreißig gegessen, und das in allen vier Städten gleichzeitig. So funktioniert eine Ordnung, die niemand aufschreiben musste."
     }
   ]
 }

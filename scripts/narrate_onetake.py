@@ -41,17 +41,16 @@ TTS_MODELS = ["gemini-3.8-flash-tts", "gemini-3.8-flash-lite-tts",
 
 # German number words for boundaries. Each appears exactly once in the script,
 # and never in the narration itself (verified by assert below).
-MARKERS = ["siebenundzwanzig", "vierundvierzig", "dreiundsechzig", "einundachtzig",
-           "sechsundneunzig"]
-
-
-def dur(p: Path) -> float:
-    return float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration",
-                                 "-of", "csv=p=0", str(p)], capture_output=True, text=True,
-                                check=True).stdout.strip())
-
+MARKERS = [
+    "siebenundzwanzig", "vierundvierzig", "dreiundsechzig", "einundachtzig",
+    "sechsundneunzig", "zweiundfünfzig", "achtundsiebzig", "fünfundachtzig",
+    "dreiundvierzig", "siebenundsechzig", "vierundneunzig", "sechzig",
+    "einunddreißig", "dreiundsiebzig", "hundert", "sechsundvierzig",
+    "achtundneunzig", "fünfundsiebzig",
+]  # one per act boundary: scenes - 1
 
 def to_wav(raw: bytes, out: Path) -> None:
+    # Write Gemini audio (RIFF or raw s16le) as 48 kHz mono WAV.
     tmp = out.with_suffix(".raw")
     tmp.write_bytes(raw)
     cmd = ["ffmpeg", "-y", "-loglevel", "error"]
@@ -107,9 +106,13 @@ def build_text(scenes: list[dict]) -> tuple[str, list[dict]]:
             parts.append(f"\n\n{word}.\n\n")
             bounds.append({"scene": sc["id"], "marker": word})
     text = "".join(parts)
+    # A marker must be unique in the whole batch, otherwise the cut point is
+    # ambiguous. Count with word boundaries so "sechzig" does not match inside
+    # another number word.
     for b in bounds:
-        if text.lower().count(b["marker"]) != 1:
-            raise SystemExit(f"marker {b['marker']} is ambiguous in the script")
+        hits = re.findall(r"\b" + b["marker"] + r"\b", text.lower())
+        if len(hits) != 1:
+            raise SystemExit(f"marker {b['marker']} is ambiguous ({len(hits)} matches)")
     return text, bounds
 
 
@@ -134,42 +137,15 @@ def cut_at(spans: list[tuple[float, float]], src: Path, dst: Path) -> None:
 
 
 def transcribe_words(wav: Path) -> list[dict]:
-    """Ask a chat model for word-level timings of the narration."""
-    b64 = base64.b64encode(wav.read_bytes()).decode()
-    prompt = ("Gib die Wörter mit Startzeit in Sekunden als JSON-Liste zurück: "
-              '[{"word":"...","start":0.0}, ...]. Nur Wörter, keine Erklärung.')
-    body = {"contents": [{"parts": [{"text": prompt},
-                                    {"inlineData": {"mimeType": "audio/wav", "data": b64}}]}],
-            "generationConfig": {"temperature": 0}}
-    for model in ("gemini-3.5-flash", "gemini-flash-latest", "gemini-2.5-flash-lite"):
-        try:
-            reply = post_json(model, body, timeout=600)
-        except Exception as exc:  # noqa: BLE001
-            print(f"    transcribe via {model}: {type(exc).__name__}")
-            continue
-        text = reply["candidates"][0]["content"]["parts"][0]["text"]
-        m = re.search(r"\[.*\]", text, re.S)
-        if not m:
-            continue
-        try:
-            return json.loads(m.group(0))
-        except json.JSONDecodeError:
-            continue
-    return []
+    """Word timings for the whole narration (sliced). See transcribe_words.py."""
+    from transcribe_words import transcribe
+    return transcribe(wav)
 
 
-def locate_markers(words: list[dict], markers: list[str], total: float) -> list[tuple[float, float]]:
-    spans = []
-    for mk in markers:
-        idx = next((i for i, w in enumerate(words) if mk in w["word"].lower()), None)
-        if idx is None:
-            print(f"    marker '{mk}' not found in transcript")
-            continue
-        start = max(0.0, words[idx]["start"] - 0.28)
-        nxt = words[idx + 1]["start"] if idx + 1 < len(words) else start + 1.4
-        end = min(total, nxt + 0.05)
-        spans.append((start, end))
-    return spans
+def locate_markers(words: list[dict], markers: list[str], total: float):
+    """Marker spans to delete; matches digits and words. See markers.py."""
+    from markers import words_to_markers
+    return words_to_markers(words, markers, total)
 
 
 def main() -> int:
@@ -194,15 +170,18 @@ def main() -> int:
     total = dur(raw)
     words = transcribe_words(raw)
     if words:
-        spans = locate_markers(words, [b["marker"] for b in bounds], total)
+        spans, missing = locate_markers(words, [b["marker"] for b in bounds], total)
         print(f"  located {len(spans)} of {len(bounds)} markers in transcript")
+        if missing:
+            print(f"  NOT located (audio kept, will be audible): {missing}")
     else:
         spans = []
         print("  transcription unavailable, no marker removal (markers will be audible!)")
 
     clean = AUDIO / "narration_clean.wav"
     if spans:
-        cut_at(spans, raw, clean)
+        from markers import strip_spans
+        strip_spans(raw, spans, clean)
         print(f"  clean narration: {dur(clean):.1f}s (removed {total - dur(clean):.1f}s)")
     else:
         clean = raw
