@@ -25,7 +25,9 @@
       "type": "quote",
       "quote": "Wer in der DDR aufgewachsen ist, isst bis heute warm, wenn andere Kaffee trinken.",
       "by": "Es sind Uhrzeiten – keine Nostalgie",
-      "words": "Wer in der DDR aufgewachsen ist, isst bis heute warm, wenn andere Kaffee trinken. Das ist keine Nostalgie. Es sind Uhrzeiten. Eine unsichtbare Ordnung, die den Alltag genauso prägte wie Mauer und Betrieb."
+      "words": "Wer in der DDR aufgewachsen ist, isst bis heute warm, wenn andere Kaffee trinken. Das ist keine Nostalgie. Es sind Uhrzeiten. Eine unsichtbare Ordnung, die den Alltag genauso prägte wie Mauer und Betrieb.",
+      "context": "Betriebskantine, Frühschicht, ein Takt, der alle Familien erfasste.",
+      "big": "11:30"
     },
     {
       "id": 4,
@@ -56,8 +58,18 @@
       "note": "Neubaumiete im Osten – bebaut nach der Wohnungsbauserie 70",
       "max": 10,
       "bars": [
-        { "label": "DDR-Neubau", "value": 1, "display": "≈ 1 M / m²", "color": "#c8472f" },
-        { "label": "Staat-Zuschuss", "value": 8, "display": "Rest trägt der Staat", "color": "#2f6f6a" }
+        {
+          "label": "DDR-Neubau",
+          "value": 1,
+          "display": "≈ 1 M / m²",
+          "color": "#c8472f"
+        },
+        {
+          "label": "Staat-Zuschuss",
+          "value": 8,
+          "display": "Rest trägt der Staat",
+          "color": "#2f6f6a"
+        }
       ],
       "foot": "Ein Preis, der nie den Markt sah – deshalb blieb er so lange gleich.",
       "words": "Nach neunzehnhunderteinundsiebzig wurde die Wohnungsfrage zum Kernstück der Sozialpolitik; das staatliche Wohnungsbauprogramm von neunzehnhundertzweiundsiebzig sollte den Wohnraummangel bis neunzehnhundertneunzig beseitigen. Man baute schnell, und man baute in Beton, nach einem Muster: die Wohnungsbauserie siebzig."
@@ -68,8 +80,26 @@
       "title": "Altbau vs. Neubau",
       "kicker": "DER KOMFORTSPRUNG",
       "columns": [
-        { "head": "Altbau", "year": "vor 1945", "items": ["Ofen heizen", "Kohlen tragen", "Wasser am Waschbecken", "Toilette auf halber Treppe"] },
-        { "head": "Neubau WBS 70", "year": "ab 1973", "items": ["Fernwärme", "Bad mit Wanne", "Fließend Warmwasser", "Innen-WC"] }
+        {
+          "head": "Altbau",
+          "year": "vor 1945",
+          "items": [
+            "Ofen heizen",
+            "Kohlen tragen",
+            "Wasser am Waschbecken",
+            "Toilette auf halber Treppe"
+          ]
+        },
+        {
+          "head": "Neubau WBS 70",
+          "year": "ab 1973",
+          "items": [
+            "Fernwärme",
+            "Bad mit Wanne",
+            "Fließend Warmwasser",
+            "Innen-WC"
+          ]
+        }
       ],
       "foot": "Für viele Familien der größte Komfortsprung ihres Lebens.",
       "words": "Sie wurde um neunzehnhundertsiebzig entwickelt, ab neunzehnhundertzweiundsiebzig verbindlich beschlossen und ab neunzehnhundertdreiundsiebzig millionenfach errichtet. Diese Wohnung war nicht nur eine Wohnung. Sie war ein Interface. Warmwasser, Zentralheizung, Bad, Innen-WC. Klingt selbstverständlich?"
@@ -82,8 +112,18 @@
       "note": "Wer einen Trabant bestellte, wartete. Und wartete.",
       "max": 15,
       "bars": [
-        { "label": "Telefon", "value": 8, "display": "viele Jahre", "color": "#2f6f6a" },
-        { "label": "Trabant 601", "value": 15, "display": "10 – 15 Jahre", "color": "#c8472f" }
+        {
+          "label": "Telefon",
+          "value": 8,
+          "display": "viele Jahre",
+          "color": "#2f6f6a"
+        },
+        {
+          "label": "Trabant 601",
+          "value": 15,
+          "display": "10 – 15 Jahre",
+          "color": "#c8472f"
+        }
       ],
       "foot": "Ein gebrauchter Trabant kostete oft mehr als ein neuer.",
       "words": "In vielen Altbauten hieß das noch: Ofen heizen, Kohlen tragen, Wasser schleppen. Der Umzug in den Neubau war für viele Familien der größte Komfortsprung ihres Lebens. Deshalb ist der Plattenbau bis heute für viele ein Sehnsuchtsort. Für andere ein Albtraum. Beides ist ehrlich."
@@ -93,7 +133,9 @@
       "type": "quote",
       "quote": "Hauptbahnhof, Gleis drei, siebzehn Uhr. Kein Handy, kein Ersatzplan.",
       "by": "Wer sich verzählte, stand allein",
-      "words": "Und dann gab es noch einen kargen Luxus: das Telefon. Private Anschlüsse waren knapp, und die Wartezeit über die Post der DDR konnte viele Jahre dauern. Die Folgen waren spürbar. Verabredungen waren Verabredungen."
+      "words": "Und dann gab es noch einen kargen Luxus: das Telefon. Private Anschlüsse waren knapp, und die Wartezeit über die Post der DDR konnte viele Jahre dauern. Die Folgen waren spürbar. Verabredungen waren Verabredungen.",
+      "context": "Verabredungen ohne Rückruf – der Preis eines knappen Anschlusses.",
+      "big": "17:00"
     },
     {
       "id": 11,
@@ -101,9 +143,25 @@
       "title": "Wie eine Rechnung Geschichte macht",
       "kicker": "DER 17. JUNI",
       "steps": [
-        { "kicker": "URSACHE", "title": "+10 % Arbeitsnorm", "body": "Mehr Arbeit für gleichen Lohn im Baugewerbe", "accent": "#c8472f" },
-        { "kicker": "REAKTION", "title": "Streik der Bauarbeiter", "body": "Aus einer Forderung wird ein Aufstand", "accent": "#d9a441", "dark": true },
-        { "kicker": "FOLGE", "title": "17. Juni 1953", "body": "Eine Erhebung im ganzen Land", "accent": "#c8472f" }
+        {
+          "kicker": "URSACHE",
+          "title": "+10 % Arbeitsnorm",
+          "body": "Mehr Arbeit für gleichen Lohn im Baugewerbe",
+          "accent": "#c8472f"
+        },
+        {
+          "kicker": "REAKTION",
+          "title": "Streik der Bauarbeiter",
+          "body": "Aus einer Forderung wird ein Aufstand",
+          "accent": "#d9a441",
+          "dark": true
+        },
+        {
+          "kicker": "FOLGE",
+          "title": "17. Juni 1953",
+          "body": "Eine Erhebung im ganzen Land",
+          "accent": "#c8472f"
+        }
       ],
       "foot": "Das Signal, das ein Land bewegte, war eine Rechnung.",
       "words": "Nun zur Frage, die viele umtreibt. Der siebzehnte Juni neunzehnhundertdreiundfünfzig begann nicht mit einer Rede, sondern mit einer Rechnung. Die SED hatte die Arbeitsnormen im Baugewerbe um zehn Prozent erhöht, also mehr Arbeit für gleichen Lohn."
@@ -114,8 +172,24 @@
       "title": "Drei Läden, drei Welten",
       "kicker": "DER ALLTAG IM REGAL",
       "columns": [
-        { "head": "HO", "year": "ab 1948 · staatlich", "items": ["Staatliches Handelsunternehmen", "Grundversorgung", "Feste Preise, feste Regale"] },
-        { "head": "Konsum & Intershop", "year": "Genossenschaft · Westgeld", "items": ["Konsum: genossenschaftlich", "Intershop: Westgeld, Forumschecks", "1974 über 100 Filialen"] }
+        {
+          "head": "HO",
+          "year": "ab 1948 · staatlich",
+          "items": [
+            "Staatliches Handelsunternehmen",
+            "Grundversorgung",
+            "Feste Preise, feste Regale"
+          ]
+        },
+        {
+          "head": "Konsum & Intershop",
+          "year": "Genossenschaft · Westgeld",
+          "items": [
+            "Konsum: genossenschaftlich",
+            "Intershop: Westgeld, Forumschecks",
+            "1974 über 100 Filialen"
+          ]
+        }
       ],
       "foot": "Zwei Welten im selben Land – und ein Schaufenster ins Ausland.",
       "words": "Aus dem Streik von Bauarbeitern wurde in wenigen Tagen eine Erhebung im ganzen Land. Bis heute ist das der Moment, an dem man sieht, wie eng Alltag und Politik ineinander stecken."
@@ -126,11 +200,33 @@
       "title": "Vierzig Jahre Alltag",
       "kicker": "DER RAHMEN",
       "events": [
-        { "year": "1949", "pos": 0.03, "label": "DDR gegründet", "color": "#c8472f" },
-        { "year": "1953", "pos": 0.2, "label": "17. Juni" },
-        { "year": "1972", "pos": 0.45, "label": "Wohnungsbauprogramm" },
-        { "year": "1974", "pos": 0.62, "label": "Intershop-Netz" },
-        { "year": "1989", "pos": 0.97, "label": "Mauerfall", "color": "#d9a441" }
+        {
+          "year": "1949",
+          "pos": 0.03,
+          "label": "DDR gegründet",
+          "color": "#c8472f"
+        },
+        {
+          "year": "1953",
+          "pos": 0.2,
+          "label": "17. Juni"
+        },
+        {
+          "year": "1972",
+          "pos": 0.45,
+          "label": "Wohnungsbauprogramm"
+        },
+        {
+          "year": "1974",
+          "pos": 0.62,
+          "label": "Intershop-Netz"
+        },
+        {
+          "year": "1989",
+          "pos": 0.97,
+          "label": "Mauerfall",
+          "color": "#d9a441"
+        }
       ],
       "foot": "Dazwischen liegen vierzig Jahre Alltag. Das ist die eigentliche Sensation.",
       "words": "Am siebten Oktober neunzehnhundertneunundvierzig wurde die DDR gegründet. Am neunten November neunzehnhundertneunundachtzig fiel die Mauer. Dazwischen liegen vierzig Jahre Alltag. Und das ist die eigentliche Sensation: nicht der Ausnahmezustand, sondern der Alltag."
@@ -140,7 +236,9 @@
       "type": "quote",
       "quote": "Wo die Uhr wohnt, da wohnt die Politik.",
       "by": "Der Befund",
-      "words": "Ein letzter Satz zum Mitnehmen. Wenn Sie diesen Alltag verstehen wollen, schreiben Sie keinen Protest an die Wand. Schreiben Sie einen Tagesplan auf."
+      "words": "Ein letzter Satz zum Mitnehmen. Wenn Sie diesen Alltag verstehen wollen, schreiben Sie keinen Protest an die Wand. Schreiben Sie einen Tagesplan auf.",
+      "context": "Der Befund, auf den alle Beobachtungen dieses Videos zulaufen.",
+      "big": "UHR"
     },
     {
       "id": 15,

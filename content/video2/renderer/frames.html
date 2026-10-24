@@ -133,7 +133,7 @@ function revealText(text, x, y, o, p) {
 function bg(t, variant) {
   const g = ctx.createLinearGradient(0, 0, W * .35, H);
   if (variant === "dark") {
-    g.addColorStop(0, "#14181d"); g.addColorStop(.65, "#0f1216"); g.addColorStop(1, "#1a1d20");
+    g.addColorStop(0, "#0e1418"); g.addColorStop(.45, "#121a1f"); g.addColorStop(1, "#1b1410");
     ctx.fillStyle = g;
   } else {
     g.addColorStop(0, "#f6efe4"); g.addColorStop(.6, C.paper); g.addColorStop(1, "#e8ddca");
@@ -608,6 +608,18 @@ function scQuote(s, lt, dur) {
   const p1 = clamp((lt - .25) / 1.3);
   revealText(s.quote, 300, 420, { size: 104, weight: 800, color: C.white, lineH: 1.16, measureW: 1780 }, p1);
   drawText(s.by || "", 304, 1030, { size: 40, weight: 600, color: C.gold, alpha: clamp((lt - 2.0) / .8) });
+  // supporting rail: a short context line plus a large ghost numeral, so the
+  // frame has depth instead of one block of type on black
+  const pr = clamp((lt - 1.1) / .9);
+  if (pr > 0) {
+    if (s.context) {
+      drawText(s.context, 304, 1120, { size: 32, weight: 500, color: "rgba(243,236,225,.52)", maxW: 1640, alpha: pr });
+    }
+    ctx.save();
+    ctx.globalAlpha = pr * .085;
+    drawText(s.big || "11:30", W - 150, 690, { size: 360, weight: 800, color: C.gold, align: "right", track: -12 });
+    ctx.restore();
+  }
   grain(lt, .045); vignette(.45);
 }
 
@@ -646,7 +658,7 @@ function scTicker(s, lt, dur) {
   items.forEach(function (it, i) {
     const p0 = clamp((lt - (0.4 + i * 0.85)) / 0.6);
     if (p0 <= 0) return;
-    const y = 330 + i * 250;
+    const y = 316 + i * 244;
     const grow = easeOut(clamp((lt - (0.6 + i * 0.85)) / 1.2));
     const val = it.value * grow;
     const shown = it.decimals ? val.toFixed(it.decimals).replace(".", ",") : Math.round(val).toLocaleString("de-DE");
@@ -659,13 +671,12 @@ function scTicker(s, lt, dur) {
     drawText(it.unit || "", unitX, y + 52, { size: 40, weight: 700, color: "rgba(243,236,225,.55)", alpha: p0, maxW: W - unitX - 300 });
     drawText(it.label, 230, y + 118, { size: 34, weight: 500, color: "rgba(243,236,225,.80)", maxW: W - 600, alpha: p0 });
   });
-  const pf = clamp((lt - (1.2 + items.length * .85)) / .8);
   // closing rail: the takeaway, plus a rule so the frame is not bottom-heavy
   const railP = clamp((lt - (0.8 + items.length * .85)) / .9);
   if (railP > 0) {
     ctx.save(); ctx.globalAlpha = railP * .35; ctx.fillStyle = C.gold;
-    ctx.fillRect(200, 1150, W - 400, 2); ctx.restore();
-    drawText(s.foot || "", 200, 1186, { size: 38, weight: 700, color: C.gold, maxW: 2100, alpha: railP });
+    ctx.fillRect(200, 1082, W - 400, 2); ctx.restore();
+    drawText(s.foot || "", 200, 1118, { size: 38, weight: 700, color: C.gold, maxW: 2100, alpha: railP });
   }
   grain(lt, .045); vignette(.42);
 }

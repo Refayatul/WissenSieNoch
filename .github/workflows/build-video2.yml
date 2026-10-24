@@ -97,7 +97,7 @@ jobs:
       - name: Narrate (Gemini TTS)
         # Batched: free tier allows ~10 requests/day per model, so the script is
         # rendered in one act call and cut at its marker pauses.
-        run: python scripts/narrate_batch.py --batch 1
+        run: python scripts/narrate_onetake.py
 
       - name: Fetch licensed photos
         run: python scripts/fetch_photos.py
